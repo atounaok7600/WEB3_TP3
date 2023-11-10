@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <header class="border flex justify-between items-center py-2 px-5">
+    <header class="flex justify-between items-center py-2 px-5">
         <RouterLink to="/">
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
         </RouterLink>
