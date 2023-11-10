@@ -12,7 +12,6 @@
             <RouterLink to="/" class="py-2 px-4 hover:bg-slate-200">Accueil</RouterLink>
             <RouterLink to="/login" class="py-2 px-4 hover:bg-slate-200">Se connecter</RouterLink>
             <RouterLink to="/signup" class="py-2 px-4 hover:bg-slate-200">Créer un compte</RouterLink>
-            <RouterLink to="/about" class="py-2 px-4 hover:bg-slate-200">About</RouterLink>
         </nav>
     </header>
 </template>
