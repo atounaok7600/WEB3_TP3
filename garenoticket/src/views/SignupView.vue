@@ -49,13 +49,13 @@
     
                     <div class="flex justify-between gap-4">
                             <input type="submit" class="border w-full py-2 px-4 bg-orange-400 hover:cursor-pointer hover:bg-orange-500">
-                            <v-btn to="/" class="border w-full text-center py-2 px-4 bg-slate-200 hover:cursor-pointer hover:bg-slate-300">Annuler</v-btn>
+                            <a href="/" class="border w-full text-center py-2 px-4 bg-slate-200 hover:cursor-pointer hover:bg-slate-300">Annuler</a>
                     </div>
                 </Form>
     
                 <div class="py-12 px-8 h-full flex flex-col items-center justify-center">
                     <img src="../assets/signup-image.jpg" alt="image creation compte">
-                    <p class="font-thin">Vous avez déjà un compte? <a class="text-blue-400 hover:text-blue-500" href="/signup">Se connecter.</a></p>
+                    <p class="font-thin">Vous avez déjà un compte? <a class="text-blue-400 hover:text-blue-500" href="/login">Se connecter.</a></p>
                 </div>
             </div>
         </div>
