@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
-router.get('/is-auth', isAuth);
+router.get('/isAuth', isAuth);
 
 
 module.exports = router;

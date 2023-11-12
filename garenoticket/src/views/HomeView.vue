@@ -13,7 +13,8 @@
 
       const checkAuth = async () => {
         try {
-          const response = await fetch('http://localhost:3000/is-auth', {
+          const response = await fetch('http://localhost:3000/auth/isAuth', {
+            method: 'GET',
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem('token')
             }

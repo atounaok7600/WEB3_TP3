@@ -68,13 +68,6 @@ exports.signup = async (req, res, next) => {
 
     await user.save();
   
-    // // Récupère token JWT
-    // const token = jwt.sign(
-    //   { userId: newUser._id, email: newUser.email },
-    //   config.SECRET_JWT,
-    //   { expiresIn: '24h' }
-    // );
-  
     // Réponse
     res.status(201).json({
       message: `Utilisateur créer ${username}`, 

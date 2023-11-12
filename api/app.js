@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 var hateoasLinker = require('express-hateoas-links');
 const cors = require('cors');
+const isAuth = require('./middleware/is-auth');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -39,6 +40,9 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes);
 app.use(userRoutes);
 app.use(historiqueRoutes);
+
+app.use('/is-auth', isAuth);
+
 
 
 
