@@ -23,7 +23,7 @@
             return !this.isNomValid ? 'Le nom doit contenir entre 3 et 50 caractères.' : ''
         },
         isMailValid(){
-            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(this.email);
+            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(this.mail);
         },
         mailErrMsg(){
             return !this.isMailValid ? 'Le courriel doit être valide.' : ''
@@ -107,7 +107,7 @@
                             <label for="mdp">
                                 <i class="zmdi zmdi-lock"></i>
                             </label>
-                            <input type="text" name="mdp" v-model="mdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Mot de passe" required>
+                            <input type="password" name="mdp" v-model="mdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Mot de passe" required>
                         </div>
                         <div class="text-red-400" v-if="showErrors && !isMdpValid">{{ mdpErrMsg }}</div>
         
@@ -115,7 +115,7 @@
                             <label for="cmpd">
                                 <i class="zmdi zmdi-lock-outline"></i>
                             </label>
-                            <input type="text" name="cmdp" v-model="mdp_confirm" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Confirmer Mot de passe" required>
+                            <input type="password" name="cmdp" v-model="mdp_confirm" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Confirmer Mot de passe" required>
                         </div>
                         <div class="text-red-400" v-if="showErrors && !isCMdpValid">{{ cMdpErrMsg }}</div>
     

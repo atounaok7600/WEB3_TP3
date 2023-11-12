@@ -1,6 +1,7 @@
 <script>
   import { useRouter } from 'vue-router';
-import AppLayout from '../layouts/AppLayout.vue'
+  import { ref, onMounted } from 'vue';
+  import AppLayout from '../layouts/AppLayout.vue'
 
   export default {
     components: {
@@ -8,11 +9,32 @@ import AppLayout from '../layouts/AppLayout.vue'
     },
     setup() {
       const router = useRouter();
-      const isLogged = false;
+      const isLogged = ref(false);
 
-      if(!isLogged){
-        router.push('/login');
+      const checkAuth = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/is-auth', {
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+          });
+
+          if (response.ok) {
+            isLogged.value = true;
+          } else {
+            if (response.status === 401) {
+              router.push('/login');
+            }
+          }
+        } catch (error) {
+          console.error('Erreur lors de la vérification de l\'authentification', error);
+          router.push('/login');
+        }
       }
+
+      onMounted(() => {
+        checkAuth();
+      });
 
       return {
         isLogged
