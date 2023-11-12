@@ -13,7 +13,7 @@ components: {
     <AuthLayout>
         <div class="min-h-[100vh] flex justify-center items-center">
             <div class="p-16 flex justify-between items-center gap-6 border rounded-lg shadow-md">
-                <div class="py-12 px-8 flex flex-col items-center justify-center">
+                <div class="gap-6 px-8 flex flex-col items-center justify-center">
                     <img src="../assets/signin-image.jpg" alt="image creation compte">
                     <p class="font-thin">Vous n'avez pas de compte? <a class="text-blue-400 hover:text-blue-500" href="/signup">Créer un compte.</a></p>
                 </div>

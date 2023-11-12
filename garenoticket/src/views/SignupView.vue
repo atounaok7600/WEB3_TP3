@@ -53,7 +53,7 @@
                     </div>
                 </Form>
     
-                <div class="py-12 px-8 h-full flex flex-col items-center justify-center">
+                <div class=" px-8 h-full flex flex-col gap-6 items-center justify-center">
                     <img src="../assets/signup-image.jpg" alt="image creation compte">
                     <p class="font-thin">Vous avez déjà un compte? <a class="text-blue-400 hover:text-blue-500" href="/login">Se connecter.</a></p>
                 </div>
