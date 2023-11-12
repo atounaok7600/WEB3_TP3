@@ -5,6 +5,26 @@
     export default {
     components: {
         AuthLayout
+    },
+    data() {
+        return {
+            nom: '',
+            mail: '',
+            mdp: '',
+            mdp_confirm: '',
+        }
+    },
+    methods: {
+        handleSubmit(e) {
+            const data = {
+                nom: this.nom,
+                mail: this.mail,
+                mdp: this.mdp,
+                mdp_confirm: this.mdp_confirm
+            }
+
+            console.log(data)
+        }
     }
     }
 </script>
@@ -13,7 +33,7 @@
     <AuthLayout>
         <div class="min-h-[100vh] flex justify-center items-center">
             <div class="p-16 flex justify-center items-center gap-6 border rounded-lg shadow-md">
-                <Form class="py-6 px-8 h-full flex flex-col gap-12">
+                <Form @submit.prevent="handleSubmit" class="py-6 px-8 h-full flex flex-col gap-12">
                     <h2 class="text-3xl font-bold">Créer un compte</h2>
         
                     <div class="flex flex-col gap-4">
@@ -21,28 +41,28 @@
                             <label for="nom">
                                 <i class="zmdi zmdi-account zmdi-hc-lg"></i>
                             </label>
-                            <input type="text" name="nom" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Nom complet" required>
+                            <input type="text" name="nom" v-model="nom" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Nom complet" required>
                         </div>
         
                         <div class="flex items-center gap-1 border-b">
                             <label for="mail">
                                 <i class="zmdi zmdi-email"></i>
                             </label>
-                            <input type="text" name="mail" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Email" required>
+                            <input type="text" name="mail" v-model="mail" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Email" required>
                         </div>
         
                         <div class="flex items-center gap-1 border-b">
                             <label for="mdp">
                                 <i class="zmdi zmdi-lock"></i>
                             </label>
-                            <input type="text" name="mdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Mot de passe" required>
+                            <input type="text" name="mdp" v-model="mdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Mot de passe" required>
                         </div>
         
                         <div class="flex items-center gap-1 border-b">
                             <label for="cmpd">
                                 <i class="zmdi zmdi-lock-outline"></i>
                             </label>
-                            <input type="text" name="cmdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Confirmer Mot de passe" required>
+                            <input type="text" name="cmdp" v-model="mdp_confirm" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Confirmer Mot de passe" required>
                         </div>
     
                     </div>
