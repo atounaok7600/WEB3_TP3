@@ -8,9 +8,9 @@
     </head>
     <body class="min-w-screen min-h-screen flex flex-col">
 
-        <v-content>
+        <div>
             <slot></slot>
-        </v-content>
+        </div>
 
     </body>
 </template>

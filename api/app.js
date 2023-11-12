@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 var hateoasLinker = require('express-hateoas-links');
+const cors = require('cors');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -11,12 +12,15 @@ const app = express();
 const PORT = config.PORT;
 const MONGO_URL = config.MONGO_URL
 
+app.use(cors());
+
 // parse application/json
 app.use(express.json());  
 
 // remplace le res.json standard avec la nouvelle version
 // qui prend en charge les liens HATEOAS
 app.use(hateoasLinker); 
+
 
 
 app.use((req, res, next) => {

@@ -5,16 +5,13 @@
 </script>
 
 <template>
-    <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css"> 
-    </head>
-    <body class="min-w-screen min-h-screen flex flex-col">
+    <div class="min-w-screen min-h-screen flex flex-col">
         <Navbar/>
 
-        <v-content>
+        <div>
             <slot></slot>
-        </v-content>
+        </div>
 
         <FooterView/>
-    </body>
+    </div>
 </template>
