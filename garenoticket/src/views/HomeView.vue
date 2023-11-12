@@ -1,9 +1,17 @@
-<script setup>
+<script>
+  import AppLayout from '../layouts/AppLayout.vue'
 
+  export default {
+    components: {
+      AppLayout
+    }
+  }
 </script>
 
 <template>
-  <div>
-    Home page
-  </div>
+  <AppLayout>
+    <div>
+      Home page
+    </div>
+  </AppLayout>
 </template>

@@ -5,13 +5,7 @@ import FooterView from './components/FooterView.vue'
 </script>
 
 <template>
-  <body class="min-w-screen min-h-screen flex flex-col">
-    <Navbar/>
-
-    <main class="">
-      <RouterView />    
-    </main>
-
-    <FooterView/>
-  </body>
+  <div class="">
+    <RouterView /> 
+  </div>
 </template>
