@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 export const checkAuth = () => {
     const router = useRouter();
     const isLogged = ref(false);
+    const user = ref(null)
 
     const checkAuth = async () => {
         try {
@@ -16,6 +17,7 @@ export const checkAuth = () => {
 
           if (response.ok) {
             isLogged.value = true;
+            user.value = await response.json();
           } else {
             if (response.status === 401) {
               router.push('/login');
@@ -33,5 +35,6 @@ export const checkAuth = () => {
 
     return {
         isLogged,
+        user
     }
 }

@@ -69,7 +69,7 @@
                     window.location.href = '/login'
                 })
                 .catch((err) => {
-                    console.error("Error lors de l'envoi des données", err)
+                    console.error("Erreur lors de l'envoi des données", err)
                 })
             } else {
                 this.showErrors = true
