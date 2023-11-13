@@ -65,24 +65,24 @@
                 <div class="flex items-center justify-between w-full gap-4">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-accounts-list"></i>
-                        <h3 class="text-lg font-semibold">Mes infos</h3>
+                        <h3 class="text-xl font-light">Mes infos</h3>
                     </div>
                     <button class="hover:bg-slate-200 border py-1 px-2.5">
                         <i class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
 
-                <form class="flex flex-col gap-4">
-                    <div class="flex flex-col gap-1">
-                        <label for="usename">Username</label>
-                        <input type="text" name="username" id="username" class="border py-1 px-2">
+                <form class="flex flex-col gap-8">
+                    <div class="flex items-center gap-1">
+                        <label for="usename" class="w-1/12 font-thin text-lg">Username</label>
+                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Nom complet">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="courriel">Courriel</label>
-                        <input type="email" name="courriel" id="courriel" class="border py-1 px-2">
+                    <div class="flex items-center gap-1">
+                        <label for="courriel" class="w-1/12 font-thin text-lg">Courriel</label>
+                        <input type="email" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Adresse courriel">
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4">Enregistrer</button>
+                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
                     </div>
                 </form>
             </div>
@@ -91,32 +91,32 @@
                 <div class="flex items-center gap-4 justify-between w-full">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-car"></i>
-                        <h3 class="text-lg font-semibold">Ma voiture</h3>
+                        <h3 class="text-xl font-light">Ma voiture</h3>
                     </div>
                     <button class="hover:bg-slate-200 border py-1 px-2.5">
                         <i class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
 
-                <form class="flex flex-col gap-4">
-                    <div class="flex flex-col gap-1">
-                        <label for="usename">Marque</label>
-                        <input type="text" name="username" id="username" class="border py-1 px-2">
+                <form class="flex flex-col gap-8">
+                    <div class="flex items-center">
+                        <label for="usename" class="w-1/12 font-thin text-lg">Marque</label>
+                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Marque de la voiture">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="courriel">Modèle</label>
-                        <input type="email" name="courriel" id="courriel" class="border py-1 px-2">
+                    <div class="flex items-center">
+                        <label for="courriel" class="w-1/12 font-thin text-lg">Modèle</label>
+                        <input type="text" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Modèle de la voiture">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="usename">Couleur</label>
-                        <input type="text" name="username" id="username" class="border py-1 px-2">
+                    <div class="flex items-center">
+                        <label for="usename" class="w-1/12 font-thin text-lg">Couleur</label>
+                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Couleur de la voiture">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="courriel">Plaque</label>
-                        <input type="email" name="courriel" id="courriel" class="border py-1 px-2">
+                    <div class="flex items-center">
+                        <label for="courriel" class="w-1/12 font-thin text-lg">Plaque</label>
+                        <input type="text" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Immatriculation de la voiture">
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4">Enregistrer</button>
+                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
                     </div>
                 </form>
             </div>
