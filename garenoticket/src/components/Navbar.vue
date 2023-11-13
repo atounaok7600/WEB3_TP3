@@ -30,9 +30,10 @@
 
         <nav class="flex gap-2">
             <RouterLink to="/" class="py-2 px-4 hover:bg-slate-200">Accueil</RouterLink>
-            <RouterLink to="/maplace" class="py-2 px-4 hover:bg-slate-200">Ma place</RouterLink>
-            <RouterLink to="/valet" class="py-2 px-4 hover:bg-slate-200">Valet</RouterLink>
-            <a @click="handleLogout" class="py-2 px-4 hover:bg-slate-200">Se déconnecter</a>
+            <RouterLink to="/maplace" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2"><i class="zmdi zmdi-pin-drop"></i>Ma place</RouterLink>
+            <RouterLink to="/valet" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2"><i class="zmdi zmdi-car"></i>Valet</RouterLink>
+            <RouterLink to="/profil" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2"><i class="zmdi zmdi-account"></i> Profil</RouterLink>
+            <a @click="handleLogout" class="py-2 px-4 hover:cursor-pointer hover:bg-slate-200">Se déconnecter</a>
         </nav>
     </header>
 </template>
