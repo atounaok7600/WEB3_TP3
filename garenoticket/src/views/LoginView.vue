@@ -1,10 +1,12 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import AuthLayout from '../layouts/AuthLayout.vue'
+import AuthInput from '../components/AuthInput.vue'
 
 export default {
 components: {
-    AuthLayout
+    AuthLayout,
+    AuthInput,
 },
 data() {
         return {
@@ -81,19 +83,21 @@ data() {
                     <h2 class="text-3xl font-bold">Se connecter</h2>
         
                     <div class="flex flex-col gap-4">      
-                        <div class="flex items-center gap-1 border-b">
-                            <label for="mail">
-                                <i class="zmdi zmdi-email"></i>
-                            </label>
-                            <input type="text" name="mail" v-model="mail" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Email" required>
-                        </div>
+                        <AuthInput 
+                            iconName="zmdi zmdi-email" 
+                            name="mail" 
+                            type="email"  
+                            v-model="mail" 
+                            placeholder="Email" 
+                            required/>
         
-                        <div class="flex items-center gap-1 border-b">
-                            <label for="mdp">
-                                <i class="zmdi zmdi-lock"></i>
-                            </label>
-                            <input type="password" name="mdp" v-model="mdp" class="px-3 py-2 rounded-md focus:outline-none font-thin" placeholder="Mot de passe" required>
-                        </div>
+                        <AuthInput 
+                            iconName="zmdi zmdi-lock" 
+                            name="mdp" 
+                            type="password"  
+                            v-model="mdp" 
+                            placeholder="Mot de passes" 
+                            required/>
                         <div class="text-red-400" v-if="showErrors">{{ ErrMsg }}</div>
                     </div>
     
