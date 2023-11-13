@@ -47,7 +47,15 @@ data() {
                 })
                 .then(data => {
                     console.log('Success: ', data )
-                    window.location.href = '/'
+                    localStorage.setItem('token', data.token)
+                    
+                    // Vérifie le rôle et redirige en conséquence
+                    if (data.isValet) {
+                        console.log(data.isValet)
+                        window.location.href = '/valet';
+                    } else {
+                        window.location.href = '/maplace';
+                    }
                 })
                 .catch((err) => {
                     console.error("Error lors de l'envoi des données", err)
@@ -69,7 +77,7 @@ data() {
                     <p class="font-thin">Vous n'avez pas de compte? <a class="text-blue-400 hover:text-blue-500" href="/signup">Créer un compte.</a></p>
                 </div>
 
-                <form @submit.prevent="handleLogin" class="py-6 px-8 flex flex-col h-auto gap-12 ">
+                <form @submit.prevent="handleLogin" class="py-6 px-8 flex flex-col h-auto gap-12" autocomplete="off">
                     <h2 class="text-3xl font-bold">Se connecter</h2>
         
                     <div class="flex flex-col gap-4">      

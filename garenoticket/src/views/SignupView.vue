@@ -83,7 +83,7 @@
     <AuthLayout>
         <div class="min-h-[100vh] flex justify-center items-center">
             <div class="p-16 flex justify-center items-center gap-6 border rounded-lg shadow-md">
-                <form @submit.prevent="handleSubmit" class="py-6 px-8 h-full flex flex-col gap-12">
+                <form @submit.prevent="handleSubmit" class="py-6 px-8 h-full flex flex-col gap-12" autocomplete="off">
                     <h2 class="text-3xl font-bold">Créer un compte</h2>
         
                     <div class="flex flex-col gap-4">

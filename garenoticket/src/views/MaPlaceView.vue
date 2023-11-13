@@ -21,7 +21,7 @@
 <template>
   <AppLayout>
     <div>
-      Home page
+      Ma place
     </div>
   </AppLayout>
 </template>

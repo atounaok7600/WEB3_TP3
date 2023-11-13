@@ -34,6 +34,7 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       message: "Connexion réussie",
       user: user.username,
+      isValet: user.isValet,
       token,
     })
   } catch (error) {
@@ -63,7 +64,7 @@ exports.signup = async (req, res, next) => {
     const user = new User({
       email,
       username,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     await user.save();

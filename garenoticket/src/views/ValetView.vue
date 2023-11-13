@@ -21,7 +21,7 @@
 <template>
   <AppLayout>
     <div>
-      Home page
+      Valet
     </div>
   </AppLayout>
 </template>
