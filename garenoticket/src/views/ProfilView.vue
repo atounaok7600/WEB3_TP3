@@ -1,9 +1,11 @@
 <script>
   import AppLayout from '../layouts/AppLayout.vue'
+  import ProfileInput from '../components/ProfileInput.vue';
 
   export default {
     components: {
-      AppLayout
+      AppLayout,
+      ProfileInput
     },
     data() {
         return{
@@ -62,7 +64,7 @@
         </div>        
         <div class="w-2/3 py-4 px-6 flex flex-col gap-4 justify-between items-between">
             <div class="border flex flex-col p-2">
-                <div class="flex items-center justify-between w-full gap-4">
+                <div class="flex items-center mb-4 justify-between w-full gap-4">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-accounts-list"></i>
                         <h3 class="text-xl font-light">Mes infos</h3>
@@ -73,14 +75,19 @@
                 </div>
 
                 <form class="flex flex-col gap-8">
-                    <div class="flex items-center gap-1">
-                        <label for="usename" class="w-1/12 font-thin text-lg">Username</label>
-                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Nom complet">
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <label for="courriel" class="w-1/12 font-thin text-lg">Courriel</label>
-                        <input type="email" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Adresse courriel">
-                    </div>
+                    <ProfileInput  
+                        label="Username"
+                        name="username"
+                        :value="this.user.username ? this.user.username : ''"
+                        placeholder="Nom complet"/>
+                    
+                    <ProfileInput  
+                        label="Courriel"
+                        name="courriel"
+                        type="email"
+                        :value="this.user.email ? this.user.email : ''"
+                        placeholder="Adresse courriel"/>
+
                     <div class="flex justify-end">
                         <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
                     </div>
@@ -88,7 +95,7 @@
             </div>
 
             <div class="border flex flex-col p-2">
-                <div class="flex items-center gap-4 justify-between w-full">
+                <div class="flex items-center gap-4 mb-4  justify-between w-full">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-car"></i>
                         <h3 class="text-xl font-light">Ma voiture</h3>
@@ -99,22 +106,30 @@
                 </div>
 
                 <form class="flex flex-col gap-8">
-                    <div class="flex items-center">
-                        <label for="usename" class="w-1/12 font-thin text-lg">Marque</label>
-                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Marque de la voiture">
-                    </div>
-                    <div class="flex items-center">
-                        <label for="courriel" class="w-1/12 font-thin text-lg">Modèle</label>
-                        <input type="text" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Modèle de la voiture">
-                    </div>
-                    <div class="flex items-center">
-                        <label for="usename" class="w-1/12 font-thin text-lg">Couleur</label>
-                        <input type="text" name="username" id="username" class="border-b py-1 px-2 w-6/12" placeholder="Couleur de la voiture">
-                    </div>
-                    <div class="flex items-center">
-                        <label for="courriel" class="w-1/12 font-thin text-lg">Plaque</label>
-                        <input type="text" name="courriel" id="courriel" class="border-b py-1 px-2 w-6/12" placeholder="Immatriculation de la voiture">
-                    </div>
+                    <ProfileInput  
+                        label="Marque"
+                        name="marque"
+                        :value="''"
+                        placeholder="Marque de la voiture"/>
+
+                    <ProfileInput  
+                        label="Modèle"
+                        name="modele"
+                        :value="''"
+                        placeholder="Modèle de la voiture"/>
+
+                    <ProfileInput  
+                        label="Couleur"
+                        name="couleur"
+                        :value="''"
+                        placeholder="Couleur de la voiture"/>
+
+                    <ProfileInput  
+                        label="Plaque"
+                        name="plaque"
+                        :value="''"
+                        placeholder="Immatriculation de la voiture"/>
+                        
                     <div class="flex justify-end">
                         <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
                     </div>
