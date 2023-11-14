@@ -1,6 +1,7 @@
 <script>
   import AppLayout from '../layouts/AppLayout.vue'
   import ProfileInput from '../components/ProfileInput.vue';
+  import { toast } from 'vue3-toastify';
 
   export default {
     components: {
@@ -13,7 +14,38 @@
             loading: true,
             error: null,
             username: '',
-            imgSrc: ''
+            imgSrc: '',
+            showConfirmationModal: null,
+        }
+    },
+    methods: {
+        openConfirmationModal(){this.showConfirmationModal = true;},
+        closeConfirmationModal(){this.showConfirmationModal = false;},
+        deleteUserConfirmed(){
+
+            fetch('http://localhost:3000/user/', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                })
+                .then(res => {
+                    if(!res.ok) {
+                        throw new Error('Erreur réseau ou serveur')
+                    }
+                })
+                .then(data => {
+                    toast.success('Votre compte à été supprimé', {
+                        autoClose: 2000
+                    })
+                    setTimeout(() => {
+                        window.location.href = '/signup'
+                    }, 2000);
+                })
+                .catch((err) => {
+                    console.error("Erreur lors de l'envoi des données", err)
+                })
         }
     },
     async mounted() {
@@ -168,7 +200,18 @@
             </div>
 
             <div class="text-end self-end">
-                <a href="" class="text-red-500 hover:underline flex items-center justify-end gap-2"><i class="zmdi zmdi-delete"></i>Supprimer mon compte.</a>
+                <button @click.prevent="openConfirmationModal" class="text-red-500 hover:underline flex items-center justify-end gap-2"><i class="zmdi zmdi-delete"></i>Supprimer mon compte.</button>
+            </div>
+
+            <!-- Model de confirmation de suppression -->
+            <div v-if="showConfirmationModal" class="modal-overlay">
+                <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
+                    <p class="text-center text-xl font-thin">Voulez-vous vraiment supprimer votre compte?</p>
+                    <div class="flex justify-between gap-8">
+                        <button @click="deleteUserConfirmed" class="border py-2 w-full text-white bg-red-500 hover:bg-red-400 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-delete"></i>Confirmer</button>
+                        <button @click="closeConfirmationModal" class="border py-2 w-full  hover:bg-slate-200 rounded-md">Annuler</button>
+                    </div>
+                </div>
             </div>
         </div>        
       </div>
@@ -181,5 +224,16 @@
         background-image: url('../assets/bg-profil.jpg');
         background-size: cover;
         background-position: center;
+    }
+    .modal-overlay{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
