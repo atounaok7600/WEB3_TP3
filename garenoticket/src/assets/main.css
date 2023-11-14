@@ -7,3 +7,7 @@
 body{
     font-family: 'Roboto', sans-serif;
 }
+
+.page-container {
+    min-height: calc(100vh - 75px - 100px);
+}

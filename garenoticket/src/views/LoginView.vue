@@ -103,7 +103,7 @@ data() {
     
                     <div class="flex justify-between gap-4">
                             <input type="submit" class="border w-full py-2 px-4 bg-orange-400 hover:cursor-pointer hover:bg-orange-500 rounded-md">
-                            <a href="/" class="border w-full text-center py-2 px-4 bg-slate-200 hover:cursor-pointer hover:bg-slate-300 rounded-md">Annuler</a>
+                            <input type="reset" class="border w-full text-center py-2 px-4 bg-slate-200 hover:cursor-pointer hover:bg-slate-300 rounded-md"/>
                     </div>
                 </form>
             </div>

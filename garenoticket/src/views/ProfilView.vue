@@ -45,21 +45,21 @@
 
 <template>
   <AppLayout>
-    <div class="py-6 px-36 profile-container">
+    <div class="py-6 px-36 page-container flex items-center justify-center">
       <div v-if="loading">
         Chargement...
       </div>
       <div v-else-if="error">
         {{ error }}
       </div>
-      <div v-else class="flex border shadow-md h-full rounded-md bg-white">
+      <div v-else class="flex border shadow-md min-h-full rounded-md bg-white">
         <div class="border-r w-1/3 py-4 px-6 flex flex-col gap-2">
             <img :src="imgSrc" class="rounded-md h-5/6 object-cover" alt="photo de profile">
             <div class="h-1/6">
                 <p class="font-thin text-center flex items-center justify-center h-full text-5xl">Bonjour, {{ this.user.username }}.</p>
             </div>
         </div>        
-        <div class="w-2/3 py-4 px-6 flex flex-col gap-4 justify-between items-between">
+        <div class="w-2/3 py-4 px-6 min-h-[70vh] flex flex-col gap-4 justify-between items-between">
             <div class="border-b flex flex-col p-2">
                 <div class="flex items-center mb-4 justify-between w-full gap-4">
                     <div class="flex items-center gap-2">
@@ -91,7 +91,7 @@
                 </form>
             </div>
 
-            <div v-if="user.isValet" class="border-b  flex flex-col p-2">
+            <div v-if="user.isValet" class="border-b h-full flex flex-col p-2">
                 <div class="flex items-center gap-4 mb-4  justify-between w-full">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-money"></i>
@@ -102,14 +102,14 @@
                     </button>
                 </div>
 
-                <form class="flex flex-col gap-8 ">
+                <form class="flex flex-col gap-8 h-full justify-between">
                     <ProfileInput  
                         label="Prix"
                         name="prix"
                         :value="''"
                         placeholder="Tarif pour chaque déplacement"/>
                         
-                    <div class="flex justify-end">
+                    <div class="flex justify-end mt-auto">
                         <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
                     </div>
                 </form>
@@ -167,7 +167,7 @@
 </template>
 
 <style scoped>
-    .profile-container {
+    .page-container {
         background-image: url('../assets/bg-profil.jpg');
         background-size: cover;
         background-position: center;

@@ -15,7 +15,7 @@
 
 <template>
   <AppLayout>
-    <div>
+    <div class="page-container flex items-center justify-center">
       Home page
     </div>
   </AppLayout>
