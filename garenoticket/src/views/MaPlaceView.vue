@@ -2,7 +2,7 @@
   import { useRouter } from 'vue-router';
   import { ref, onMounted } from 'vue';
   import AppLayout from '../layouts/AppLayout.vue'
-  import leaflet from 'leaflet'
+  import leaflet, { L, marker } from 'leaflet'
   import mapMarkerRed from '../assets/map-marker-red.svg';
 
   export default {
@@ -12,15 +12,17 @@
     setup() {
       let map;
       onMounted(() => {
-        map = leaflet.map('map').setView([28.538336, -81.379234], 10);
+        map = leaflet.map('map', {zoomAnimation: false}).setView([51.505, -0.09], 13);
 
         //tuiles
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
+        leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
         getGeolocation();
+
+        map.on('click', onMapClick);
       })
 
       const coords = ref(null);
@@ -33,10 +35,27 @@
           plotGeolocation(coords.value);
           return;
         }
-        
+
         fetchCoords.value = true;
         navigator.geolocation.getCurrentPosition(setCoords, getLocError);
       };
+
+      const onMapClick = (e) => {
+        coords.value = {
+          lat: e.latlng.lat,
+          lng: e.latlng.lng,
+        }
+
+        if(geoMarker.value){
+          map.removeLayer(geoMarker.value)
+        }
+
+        plotGeolocation(coords.value)
+
+        return {
+          coords,
+        }
+      }
 
       const setCoords = (pos) => {
         fetchCoords.value = null;
@@ -58,16 +77,19 @@
       }
 
       const plotGeolocation = () => {
-        //create custom marker
-        const customMarker = leaflet.icon({
-          iconUrl: mapMarkerRed,
-          iconSize: [35, 35],
-        });
+        if (map){
+          //create custom marker
+          const customMarker = leaflet.icon({
+            iconUrl: mapMarkerRed,
+            iconSize: [35, 35],
+          });
 
-        geoMarker.value = leaflet.marker([coords.value.lat, coords.value.lng], {icon: customMarker})
-          .addTo(map);
+          geoMarker.value = leaflet.marker([coords.value.lat, coords.value.lng], {icon: customMarker})
+            .addTo(map);
 
-        map.setView([coords.value.lat, coords.value.lng], 10);
+          const currentZoom = map.getZoom();
+          map.setView([coords.value.lat, coords.value.lng], currentZoom);
+        }
       }
 
       return {
