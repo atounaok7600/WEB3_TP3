@@ -13,6 +13,7 @@
             loading: true,
             error: null,
             username: '',
+            imgSrc: ''
         }
     },
     async mounted() {
@@ -27,7 +28,8 @@
             if(response.ok){
                 const data = await response.json();
                 this.user = data.user;
-                console.log('Data from API:', this.user);
+                console.log('Data from API:', this.user.isValet);
+                this.imgSrc = `https://i.pravatar.cc/1000?u=${this.user._id}`;
             }else{
                 this.error = 'Erreur lors de la récupération des donnée du user'
                 window.location.href = '/login'
@@ -43,23 +45,18 @@
 
 <template>
   <AppLayout>
-    <div class="py-6 px-36">
+    <div class="py-6 px-36 profile-container">
       <div v-if="loading">
         Chargement...
       </div>
       <div v-else-if="error">
         {{ error }}
       </div>
-      <div v-else class="flex border shadow-md h-full rounded-md">
+      <div v-else class="flex border shadow-md h-full rounded-md bg-white">
         <div class="border-r w-1/3 py-4 px-6 flex flex-col gap-2">
-            <div class="flex flex-col h-1/2 border-b items-center justify-center">
-                <div class="">
-                    Votre photo
-                </div>
-                <p class="font-thin">Bonjour, {{ this.user.username }}</p>
-            </div>
-            <div class="h-1/2">
-                
+            <img :src="imgSrc" class="rounded-md h-5/6 object-cover" alt="photo de profile">
+            <div class="h-1/6">
+                <p class="font-thin text-center flex items-center justify-center h-full text-5xl">Bonjour, {{ this.user.username }}.</p>
             </div>
         </div>        
         <div class="w-2/3 py-4 px-6 flex flex-col gap-4 justify-between items-between">
@@ -69,7 +66,7 @@
                         <i class="zmdi zmdi-accounts-list"></i>
                         <h3 class="text-xl font-light">Mes infos</h3>
                     </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5">
+                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
                         <i class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
@@ -89,7 +86,7 @@
                         placeholder="Adresse courriel"/>
 
                     <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
+                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
                     </div>
                 </form>
             </div>
@@ -100,7 +97,7 @@
                         <i class="zmdi zmdi-money"></i>
                         <h3 class="text-xl font-light">Tarifs</h3>
                     </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5">
+                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
                         <i class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
@@ -113,7 +110,7 @@
                         placeholder="Tarif pour chaque déplacement"/>
                         
                     <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
+                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
                     </div>
                 </form>
             </div>
@@ -124,7 +121,7 @@
                         <i class="zmdi zmdi-car"></i>
                         <h3 class="text-xl font-light">Ma voiture</h3>
                     </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5">
+                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
                         <i class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
@@ -155,7 +152,7 @@
                         placeholder="Immatriculation de la voiture"/>
                         
                     <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200">Enregistrer</button>
+                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
                     </div>
                 </form>
             </div>
@@ -168,3 +165,11 @@
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+    .profile-container {
+        background-image: url('../assets/bg-profil.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+</style>
