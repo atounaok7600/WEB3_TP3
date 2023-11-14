@@ -2,6 +2,8 @@
 import { RouterLink, RouterView } from 'vue-router'
 import AuthLayout from '../layouts/AuthLayout.vue'
 import AuthInput from '../components/AuthInput.vue'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 export default {
 components: {
@@ -51,15 +53,26 @@ data() {
                     console.log('Success: ', data )
                     localStorage.setItem('token', data.token)
                     
-                    // Vérifie le rôle et redirige en conséquence
-                    if (data.isValet) {
-                        console.log(data.isValet)
-                        window.location.href = '/valet';
-                    } else {
-                        window.location.href = '/maplace';
-                    }
+                    toast.success('Connexion réussie', {
+                        autoClose: 1000
+                    })
+
+                    setTimeout(() => {
+                        // Vérifie le rôle et redirige en conséquence
+                        if (data.isValet) {
+                            console.log(data.isValet)
+                            window.location.href = '/valet';
+                        } else {
+                            window.location.href = '/maplace';
+                        }
+                    }, 1000);
+                    
+
                 })
                 .catch((err) => {
+                    toast.error("L'email ou le mot de passe est incorrecte.", {
+                        autoClose: 2000
+                    })
                     console.error("Error lors de l'envoi des données", err)
                 })
             } else {

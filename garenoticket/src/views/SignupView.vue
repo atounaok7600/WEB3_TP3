@@ -2,6 +2,8 @@
     import { RouterLink, RouterView } from 'vue-router'
     import AuthLayout from '../layouts/AuthLayout.vue'
     import AuthInput from '../components/AuthInput.vue'
+    import { toast } from 'vue3-toastify';
+    import 'vue3-toastify/dist/index.css';
 
     export default {
     components: {
@@ -68,7 +70,12 @@
                 })
                 .then(data => {
                     console.log('Success: ', data )
-                    window.location.href = '/login'
+                    toast.success('Compte créé avec succès', {
+                        autoClose: 2000
+                    })
+                    setTimeout(() => {
+                        window.location.href = '/login'
+                    }, 2000);
                 })
                 .catch((err) => {
                     console.error("Erreur lors de l'envoi des données", err)
