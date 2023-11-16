@@ -2,7 +2,8 @@
   import { useRouter } from 'vue-router';
   import { ref, onMounted } from 'vue';
   import AppLayout from '../layouts/AppLayout.vue'
-  import leaflet, { L, marker } from 'leaflet'
+  import leaflet, { marker } from 'leaflet'
+  import L from 'leaflet'
   import mapMarkerRed from '../assets/map-marker-red.svg';
 
   export default {
@@ -10,9 +11,13 @@
     AppLayout,
 },
     setup() {
-      let map;
+      let marker;
+      const map = ref()
+      const mapContainer = ref()
+      let isParked = ref(false);
+
       onMounted(() => {
-        map = leaflet.map('map', {zoomAnimation: false}).setView([51.505, -0.09], 13);
+        map.value = L.map(mapContainer.value, {zoomAnimation: false}).setView([51.505, -0.09], 13);
 
         //tuiles
         leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -23,7 +28,17 @@
         getGeolocation();
 
         map.on('click', onMapClick);
-      })
+
+        marker = leaflet.marker([51.505, -0.09], { draggable: !isParked.value }).addTo(map);
+
+        marker.on('dragend', () => {
+          coords.value = {
+            lat: e.target.getLatLng().lat,
+            lng: e.target.getLatLng().lng,
+          }
+        })
+
+      });
 
       const coords = ref(null);
       const fetchCoords = ref(null);
@@ -52,9 +67,6 @@
 
         plotGeolocation(coords.value)
 
-        return {
-          coords,
-        }
       }
 
       const setCoords = (pos) => {
@@ -84,17 +96,35 @@
             iconSize: [35, 35],
           });
 
+          if(geoMarker.value){
+            map.removeLayer(geoMarker.value);
+          }
+
           geoMarker.value = leaflet.marker([coords.value.lat, coords.value.lng], {icon: customMarker})
             .addTo(map);
 
           const currentZoom = map.getZoom();
           map.setView([coords.value.lat, coords.value.lng], currentZoom);
         }
+      };
+
+      const startParking = () => {
+        isParked.value = true;
+        marker.dragging.disable();
+      };
+
+      const confirmParking = () => {
+        // Enregistrer les coordonnées actuelles et l'heure de stationnement dans la base de données
+        isParked.value = true;
+        marker.dragging.disable();
+        // Enregistrer les coordonnées et l'heure dans la base de données
       }
 
       return {
         coords,
-        geoMarker
+        geoMarker,
+        startParking,
+        confirmParking,
       };
     },
   }
@@ -103,7 +133,7 @@
 <template>
   <AppLayout>
     <div class="h-screen relative">
-      <div id="map" class="h-full z-[1]"></div>
+      <div ref="mapContainer" class="h-full z-[1]"></div>
     </div>
   </AppLayout>
 </template>
