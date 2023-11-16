@@ -52,9 +52,63 @@ exports.getUserById = async (req, res, next) => {
   }
 };
 
-exports.updateUser = async (req, res, next) => { }
+exports.updateUser = async (req, res, next) => { 
+  try {
+    const userId = req.user.userId;
+    const user = await checkUserExists(userId);
+    console.log('Je suis las' + req.user.userId)
 
-exports.updateCar = async (req, res, next) => { }
+    if(req.body.username){
+      user.username = req.body.username;
+    }
+
+    if(req.body.email){
+      user.email = req.body.email;
+    }
+
+    if(req.body.price){
+      user.price = req.body.price;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      user: updatedUser,
+      message: 'Profil mis à jour avec succès.'
+    })
+  } catch (error) {
+    next(err)
+  }
+ }
+
+exports.updateCar = async (req, res, next) => { 
+  try {
+    const userId = req.user.userId;
+    const user = await checkUserExists(userId);
+    console.log('Je suis las' + req.user.userId)
+
+    if(req.body.username){
+      user.username = req.body.username;
+    }
+
+    if(req.body.email){
+      user.email = req.body.email;
+    }
+
+    if(req.body.price){
+      user.price = req.body.price;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      user: updatedUser,
+      message: 'Profil mis à jour avec succès.'
+    })
+  } catch (error) {
+    next(err)
+  }
+ }
 
 
 

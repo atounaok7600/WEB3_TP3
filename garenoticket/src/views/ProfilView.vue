@@ -2,25 +2,109 @@
   import AppLayout from '../layouts/AppLayout.vue'
   import ProfileInput from '../components/ProfileInput.vue';
   import { toast } from 'vue3-toastify';
+import AuthInput from '../components/AuthInput.vue';
 
   export default {
     components: {
-      AppLayout,
-      ProfileInput
-    },
+    AppLayout,
+    ProfileInput,
+    AuthInput
+},
     data() {
         return{
             user: null,
+            car: null,
             loading: true,
             error: null,
             username: '',
             imgSrc: '',
             showConfirmationModal: null,
+            editingUser: false,
+            editingCar: false,
+            editedUser: {
+                username: '',
+                email: '',
+                tarif: '',
+            },
+            editedCar: {
+                marque: '',
+                modele: '',
+                couleur: '',
+                plaque: '',
+            }
         }
     },
     methods: {
         openConfirmationModal(){this.showConfirmationModal = true;},
         closeConfirmationModal(){this.showConfirmationModal = false;},
+        editProfil() {
+            this.editedUser.username = this.user.username;
+            this.editedUser.email = this.user.email;
+            this.editedUser.price = this.user.price.toString()
+
+            this.editing = true;
+        },
+        editCar() {
+            this.editedCar.marque = '';
+
+            this.editingCar = true;
+        },
+        async saveChangesUser() {
+            try {
+                const response = await fetch(`http://localhost:3000/user/${this.user._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(this.editedUser),
+                });
+
+                if(response.ok){
+                    this.editingUser = false;
+                    toast.success('Profil mis à jours avec succès.', {
+                        autoClose: 2000
+                    });
+
+                    const data = await response.json();
+                    this.user = data.user;
+                } else {
+                    const errorData = await response.json();
+                    console.error(errorData);
+                    toast.error('Erreur lors de la mise à jours du profil.');
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'envoi des données", error);
+            }
+        },
+        async saveChangesCar() {
+            try {
+                const response = await fetch(`http://localhost:3000/car/${this.user._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(this.editedCar),
+                });
+
+                if(response.ok){
+                    this.editingCar = false;
+                    toast.success('Voiture mis à jours avec succès.', {
+                        autoClose: 2000
+                    });
+
+                    const data = await response.json();
+                    this.car = data.car;
+                } else {
+                    const errorData = await response.json();
+                    console.error(errorData);
+                    toast.error('Erreur lors de la mise à jours du véhicule.');
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'envoi des données", error);
+            }
+        },
         deleteUserConfirmed(){
 
             fetch('http://localhost:3000/user/', {
@@ -69,7 +153,7 @@
         } catch (error) {
             this.error = 'Erreur inattendue'
         }finally{
-            // Attendez 5 secondes avant de désactiver le chargement
+            // Attendez .5 secondes avant de désactiver le chargement
             setTimeout(() => {
                 this.loading = false;
             }, 500);
@@ -109,13 +193,13 @@
                         <h3 class="text-xl font-light">Mes infos</h3>
                     </div>
                     <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i class="zmdi zmdi-edit"></i>
+                        <i @click="editProfil" class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
 
                 <form class="flex flex-col gap-8">
                     <ProfileInput  
-                        label="Username"
+                        label="Nom"
                         name="username"
                         :value="this.user.username ? this.user.username : ''"
                         placeholder="Nom complet"/>
@@ -126,6 +210,14 @@
                         type="email"
                         :value="this.user.email ? this.user.email : ''"
                         placeholder="Adresse courriel"/>
+                    <div v-if="user.isValet" class="">
+                        <ProfileInput  
+                            label="Tarif"
+                            name="prix"
+                            :value="this.user.price + ' $/tr'"
+                            placeholder="Tarif pour chaque déplacement"/>
+                        <p class="text-slate-300 text-end">($/tr) = Dollars CAD par trajet.</p>
+                    </div>
 
                     <div class="flex justify-end">
                         <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
@@ -134,27 +226,9 @@
             </div>
 
             <div v-if="user.isValet" class="border-b h-full flex flex-col p-2">
-                <div class="flex items-center gap-4 mb-4  justify-between w-full">
-                    <div class="flex items-center gap-2">
-                        <i class="zmdi zmdi-money"></i>
-                        <h3 class="text-xl font-light">Tarifs</h3>
-                    </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i class="zmdi zmdi-edit"></i>
-                    </button>
+                <div class="h-full w-full img-pont rounded-md">
+                    
                 </div>
-
-                <form class="flex flex-col gap-8 h-full justify-between">
-                    <ProfileInput  
-                        label="Prix"
-                        name="prix"
-                        :value="''"
-                        placeholder="Tarif pour chaque déplacement"/>
-                        
-                    <div class="flex justify-end mt-auto">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
-                    </div>
-                </form>
             </div>
 
             <div v-else class="border-b  flex flex-col p-2">
@@ -164,7 +238,7 @@
                         <h3 class="text-xl font-light">Ma voiture</h3>
                     </div>
                     <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i class="zmdi zmdi-edit"></i>
+                        <i @click="editCar" class="zmdi zmdi-edit"></i>
                     </button>
                 </div>
 
@@ -203,6 +277,86 @@
                 <button @click.prevent="openConfirmationModal" class="text-red-500 hover:underline flex items-center justify-end gap-2"><i class="zmdi zmdi-delete"></i>Supprimer mon compte.</button>
             </div>
 
+            <!-- Model de modification du user -->
+            <form v-if="editingUser" @submit.prevent="saveChangesUser" class="modal-overlay">
+                <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
+                    <h3 class="text-center text-3xl">Modifier le profil</h3>
+                    <div class="">
+                        <AuthInput 
+                            iconName="zmdi zmdi-account zmdi-hc-lg" 
+                            name="nom" 
+                            v-model="editedUser.username" 
+                            placeholder="Nom complet" 
+                            required/>
+                        <!-- <div class="text-red-400" v-if="showErrors && !isNomValid">{{ nomErrMsg }}</div> -->
+        
+                        <AuthInput 
+                            iconName="zmdi zmdi-email" 
+                            name="mail" 
+                            type="email"  
+                            v-model="editedUser.email" 
+                            placeholder="Email" 
+                            required/>
+                        <!-- <div class="text-red-400" v-if="showErrors && !isMailValid">{{ mailErrMsg }}</div> -->
+
+                        <div v-if="user.isValet" class="">
+                            <AuthInput 
+                                iconName="zmdi zmdi-money" 
+                                name="price" 
+                                type="number"  
+                                v-model="editedUser.price" 
+                                placeholder="Tarif pour chaque déplacement" 
+                                required/>
+                            <p class="text-slate-300 text-end text-sm">($/tr) = Dollars CAD par trajet.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between gap-8">
+                        <button type="submit" class="border py-2 w-full text-white bg-orange-600 hover:bg-orange-500 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-delete"></i>Confirmer</button>
+                        <button @click="() => {this.editingUser = false}" class="border py-2 w-full  hover:bg-slate-200 rounded-md">Annuler</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Model de modification de la voiture du user -->
+            <form v-if="editingCar" @submit.prevent="saveChangesVoiture" class="modal-overlay">
+                <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
+                    <h3 class="text-center text-3xl">Modifier le véhicule</h3>
+                    <div class=" flex flex-col gap-6">
+                        <AuthInput 
+                            iconName="zmdi zmdi-car" 
+                            name="marque" 
+                            v-model="editedCar.marque" 
+                            placeholder="Marque" 
+                            required/>
+        
+                        <AuthInput 
+                            iconName="zmdi zmdi-car-wash" 
+                            name="modele" 
+                            v-model="editedCar.modele" 
+                            placeholder="Modèle" 
+                            required/>
+
+                        <AuthInput 
+                            iconName="zmdi zmdi-format-color-fill" 
+                            name="couleur" 
+                            v-model="editedCar.couleur" 
+                            placeholder="Couleur" 
+                            required/>
+
+                        <AuthInput 
+                            iconName="zmdi zmdi-brush" 
+                            name="plaque"  
+                            v-model="editedCar.plaque" 
+                            placeholder="Plaque d'immatriculation" 
+                            required/>
+                    </div>
+                    <div class="flex justify-between gap-8">
+                        <button type="submit" class="border py-2 w-full text-white bg-orange-600 hover:bg-orange-500 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-delete"></i>Confirmer</button>
+                        <button @click="() => {this.editingCar = false}" class="border py-2 w-full  hover:bg-slate-200 rounded-md">Annuler</button>
+                    </div>
+                </div>
+            </form>
+
             <!-- Model de confirmation de suppression -->
             <div v-if="showConfirmationModal" class="modal-overlay">
                 <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
@@ -235,5 +389,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .img-pont{
+        background-image: url('../assets/img-pont.jpg');
+        background-size: cover;
+        background-position: center;
     }
 </style>

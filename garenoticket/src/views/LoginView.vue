@@ -4,7 +4,6 @@ import AuthLayout from '../layouts/AuthLayout.vue'
 import AuthInput from '../components/AuthInput.vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { setAuth } from '../utils/auth';
 
 export default {
 components: {
@@ -52,7 +51,7 @@ data() {
                 })
                 .then(data => {
                     console.log('Success: ', data )
-                    setAuth(data.token)
+                    localStorage.setItem('token', data.token)
                     
                     toast.success('Connexion réussie', {
                         autoClose: 1000

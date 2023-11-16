@@ -1,22 +1,3 @@
-export const setAuth = async (token) => {
-    localStorage.setItem('token', token);
-
-    const user = await fetchUser(token);
-    localStorage.setItem('user', JSON.stringify(user));
-};
-
-export const getAuth = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('token');
-
-    return { user, token };
-};
-
-export const clearAuth = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-};
-
 const fetchUser = async (userToken) => {
     try {
         const response = await fetch('http://localhost:3000/user/', {
@@ -33,6 +14,14 @@ const fetchUser = async (userToken) => {
 
         const userData = await response.json();
         return userData.user;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getUser = async (token) => {
+    try {
+        return await fetchUser(token)
     } catch (error) {
         throw error;
     }
