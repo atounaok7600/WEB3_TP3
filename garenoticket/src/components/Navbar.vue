@@ -48,7 +48,15 @@
                 <img :src="userExist() ? this.imgSrc : 'https://i.pravatar.cc/1000?u=${this.userId}'" class="w-[20px] h-[20px] rounded-md object-cover" alt="-">
                 Profil
             </RouterLink>
-            <a @click="handleLogout" class="py-2 px-4 hover:cursor-pointer hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-square-right"></i> Se déconnecter</a>
+            <button @click="handleLogout" class="
+                transition ease-in-out delay-100 
+                 hover:translate-x-2 hover:scale-140
+                py-2 px-4 hover:cursor-pointer 
+                hover:bg-slate-200 flex items-center 
+                
+                gap-2 rounded-md">
+                <i class="zmdi zmdi-square-right"></i>
+            </button>
         </nav>
     </header>
 </template>
