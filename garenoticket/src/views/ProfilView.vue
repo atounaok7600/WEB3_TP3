@@ -42,10 +42,15 @@ import AuthInput from '../components/AuthInput.vue';
             this.editedUser.email = this.user.email;
             this.editedUser.price = this.user.price.toString()
 
-            this.editing = true;
+            this.editingUser = true;
         },
         editCar() {
-            this.editedCar.marque = '';
+            if(this.car){
+                this.editedCar.marque = this.car.marque;
+                this.editedCar.modele = this.car.modele;
+                this.editedCar.couleur = this.car.couleur;
+                this.editedCar.plaque = this.car.plaque;
+            }
 
             this.editingCar = true;
         },
@@ -95,7 +100,7 @@ import AuthInput from '../components/AuthInput.vue';
                     });
 
                     const data = await response.json();
-                    this.car = data.car;
+                    this.car = data.voiture;
                 } else {
                     const errorData = await response.json();
                     console.error(errorData);
@@ -144,7 +149,7 @@ import AuthInput from '../components/AuthInput.vue';
             if(response.ok){
                 const data = await response.json();
                 this.user = data.user;
-                console.log('Data from API:', this.user.isValet);
+                this.car = data.user.voiture
                 this.imgSrc = `https://i.pravatar.cc/1000?u=${this.user._id}`;
             }else{
                 this.error = 'Erreur lors de la récupération des donnée du user'
@@ -186,7 +191,7 @@ import AuthInput from '../components/AuthInput.vue';
             </div>
         </div>        
         <div class="w-2/3 py-4 px-6 min-h-[70vh] flex flex-col gap-4 justify-between items-between">
-            <div class="border-b flex flex-col p-2">
+            <div class="border-b flex flex-col p-2 pb-10">
                 <div class="flex items-center mb-4 justify-between w-full gap-4">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-accounts-list"></i>
@@ -218,10 +223,6 @@ import AuthInput from '../components/AuthInput.vue';
                             placeholder="Tarif pour chaque déplacement"/>
                         <p class="text-slate-300 text-end">($/tr) = Dollars CAD par trajet.</p>
                     </div>
-
-                    <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
-                    </div>
                 </form>
             </div>
 
@@ -231,46 +232,50 @@ import AuthInput from '../components/AuthInput.vue';
                 </div>
             </div>
 
-            <div v-else class="border-b  flex flex-col p-2">
+            <div v-else class="border-b  flex flex-col p-2 h-full">
                 <div class="flex items-center gap-4 mb-4  justify-between w-full">
                     <div class="flex items-center gap-2">
                         <i class="zmdi zmdi-car"></i>
                         <h3 class="text-xl font-light">Ma voiture</h3>
                     </div>
                     <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i @click="editCar" class="zmdi zmdi-edit"></i>
+                        <div v-if="car">
+                            <i @click="editCar" class="zmdi zmdi-edit"></i>
+                        </div>
+                        <div v-else>
+                            <i @click="editCar" class="zmdi zmdi-plus"></i>
+                        </div>
                     </button>
                 </div>
 
-                <form class="flex flex-col gap-8 ">
+                <form v-if="car" class="flex flex-col gap-8 ">
                     <ProfileInput  
                         label="Marque"
                         name="marque"
-                        :value="''"
+                        :value="car.marque"
                         placeholder="Marque de la voiture"/>
 
                     <ProfileInput  
                         label="Modèle"
                         name="modele"
-                        :value="''"
+                        :value="car.modele"
                         placeholder="Modèle de la voiture"/>
 
                     <ProfileInput  
                         label="Couleur"
                         name="couleur"
-                        :value="''"
+                        :value="car.couleur"
                         placeholder="Couleur de la voiture"/>
 
                     <ProfileInput  
                         label="Plaque"
                         name="plaque"
-                        :value="''"
+                        :value="car.plaque"
                         placeholder="Immatriculation de la voiture"/>
-                        
-                    <div class="flex justify-end">
-                        <button type="submit" class="border py-1 px-4 hover:bg-slate-200 rounded-md">Enregistrer</button>
-                    </div>
                 </form>
+                <div v-else class="h-full flex items-center justify-center">
+                    <p class="text-2xl font-thin">Vous n'avez aucune voiture au compte.</p>
+                </div>
             </div>
 
             <div class="text-end self-end">
@@ -318,9 +323,9 @@ import AuthInput from '../components/AuthInput.vue';
             </form>
 
             <!-- Model de modification de la voiture du user -->
-            <form v-if="editingCar" @submit.prevent="saveChangesVoiture" class="modal-overlay">
+            <form v-if="editingCar" @submit.prevent="saveChangesCar" class="modal-overlay">
                 <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
-                    <h3 class="text-center text-3xl">Modifier le véhicule</h3>
+                    <h3 class="text-center text-3xl">{{ car ? 'Modifier mon véhicule' : 'Ajouter une voiture'  }}</h3>
                     <div class=" flex flex-col gap-6">
                         <AuthInput 
                             iconName="zmdi zmdi-car" 

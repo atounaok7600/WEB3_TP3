@@ -56,7 +56,6 @@ exports.updateUser = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const user = await checkUserExists(userId);
-    console.log('Je suis las' + req.user.userId)
 
     if(req.body.username){
       user.username = req.body.username;
@@ -85,25 +84,30 @@ exports.updateCar = async (req, res, next) => {
   try {
     const userId = req.user.userId;
     const user = await checkUserExists(userId);
-    console.log('Je suis las' + req.user.userId)
+    let voiture;
 
-    if(req.body.username){
-      user.username = req.body.username;
+    if(!user.voiture){
+      voiture = await Voiture.create({});
+      user.voiture = voiture._id;
+    }else{
+      voiture = await Voiture.findById(user.voiture);
     }
 
-    if(req.body.email){
-      user.email = req.body.email;
-    }
+    if (req.body.marque) voiture.marque = req.body.marque;
+    if (req.body.modele) voiture.modele = req.body.modele;
+    if (req.body.couleur) voiture.couleur = req.body.couleur;
+    if (req.body.plaque) voiture.plaque = req.body.plaque;
 
-    if(req.body.price){
-      user.price = req.body.price;
-    }
+    const updateVoiture = await voiture.save();
 
-    const updatedUser = await user.save();
+    if (!user.voiture) {
+      user.voiture = updateVoiture._id;
+      await user.save();
+    }
 
     res.status(200).json({
-      user: updatedUser,
-      message: 'Profil mis à jour avec succès.'
+      voiture: updateVoiture,
+      message: 'Voiture mise à jour avec succès.'
     })
   } catch (error) {
     next(err)
