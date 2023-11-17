@@ -1,8 +1,8 @@
 <script>
-  import AppLayout from '../layouts/AppLayout.vue'
-  import ProfileInput from '../components/ProfileInput.vue';
-  import { toast } from 'vue3-toastify';
-import AuthInput from '../components/AuthInput.vue';
+    import AppLayout from '../layouts/AppLayout.vue'
+    import ProfileInput from '../components/ProfileInput.vue';
+    import { toast } from 'vue3-toastify';
+    import AuthInput from '../components/AuthInput.vue';
 
   export default {
     components: {
@@ -383,17 +383,6 @@ import AuthInput from '../components/AuthInput.vue';
         background-image: url('../assets/bg-profil.jpg');
         background-size: cover;
         background-position: center;
-    }
-    .modal-overlay{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     .img-pont{

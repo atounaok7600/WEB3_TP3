@@ -97,6 +97,9 @@ exports.updateCar = async (req, res, next) => {
     if (req.body.modele) voiture.modele = req.body.modele;
     if (req.body.couleur) voiture.couleur = req.body.couleur;
     if (req.body.plaque) voiture.plaque = req.body.plaque;
+    if (req.body.isParked) voiture.isParked = req.body.isParked;
+    if (req.body.latitude) voiture.latitude = req.body.latitude;
+    if (req.body.longitude) voiture.longitude = req.body.longitude;
 
     const updateVoiture = await voiture.save();
 

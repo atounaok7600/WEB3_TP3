@@ -50,7 +50,7 @@
             </RouterLink>
             <button @click="handleLogout" class="
                 transition ease-in-out delay-100 
-                 hover:translate-x-2 hover:scale-140
+                hover:translate-x-2 hover:scale-110
                 py-2 px-4 hover:cursor-pointer 
                 hover:bg-slate-200 flex items-center 
                 
