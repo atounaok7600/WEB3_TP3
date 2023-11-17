@@ -7,13 +7,11 @@ import L from 'leaflet'
     lat: ref(0),
     lng: ref(0),
   }
+  let marker;
   const map = ref()
   const mapContainer = ref()
 
   onMounted(() => {
-    // Obtenir la localisation du user
-    getLocation();
-
     // Initialiser la carte
     map.value = L.map(mapContainer.value).setView([51.505, -0.09], 13);
 
@@ -23,6 +21,8 @@ import L from 'leaflet'
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map.value);
 
+    // Obtenir la localisation du user
+    getLocation();
   });
 
   // Permet de demander la localisation du user.
@@ -34,11 +34,15 @@ import L from 'leaflet'
         map.value.setView([coords.lat.value, coords.lng.value, 13]);
 
         // Ajour du marqueur
-        L.marker([coords.lat.value, coords.lng.value], { draggable: true })
-        .addTo(map.value)
-        .on('dragend', (e) => {
-          console.log(e);
-        });
+        if(!marker){
+          marker = L.marker([coords.lat.value, coords.lng.value], { draggable: true })
+          .addTo(map.value)
+          .on('dragend', (e) => {
+            console.log(e)
+          });
+        } else {
+          marker.setLatLng([coords.lat.value, coords.lng.value]);
+        }
       })
     }
   }
