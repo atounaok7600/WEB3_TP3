@@ -76,7 +76,7 @@ exports.updateUser = async (req, res, next) => {
       message: 'Profil mis à jour avec succès.'
     })
   } catch (error) {
-    next(err)
+    next(error)
   }
  }
 
@@ -89,6 +89,7 @@ exports.updateCar = async (req, res, next) => {
     if(!user.voiture){
       voiture = await Voiture.create({});
       user.voiture = voiture._id;
+      await user.save();
     }else{
       voiture = await Voiture.findById(user.voiture);
     }
@@ -103,7 +104,7 @@ exports.updateCar = async (req, res, next) => {
 
     const updateVoiture = await voiture.save();
 
-    if (!user.voiture) {
+    if (user.voiture) {
       user.voiture = updateVoiture._id;
       await user.save();
     }
@@ -113,7 +114,7 @@ exports.updateCar = async (req, res, next) => {
       message: 'Voiture mise à jour avec succès.'
     })
   } catch (error) {
-    next(err)
+    next(error)
   }
  }
 

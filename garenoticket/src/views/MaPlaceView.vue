@@ -33,6 +33,9 @@ import { toast } from 'vue3-toastify';
 
         // Ajour du marqueur
         updateMarkerPosition();
+
+        // On met le marker au centre
+        setView();
       })
     }
   }
@@ -118,6 +121,11 @@ import { toast } from 'vue3-toastify';
 
   }
 
+  // Focus sur la position actuelle
+  const setView = () => {
+    map.value.setView([coords.lat.value, coords.lng.value]);
+  }
+
   onMounted(async () => {
     // Initialiser la carte
     map.value = L.map(mapContainer.value).setView([51.505, -0.09], 13);
@@ -139,8 +147,8 @@ import { toast } from 'vue3-toastify';
 
 <template>
   <AppLayout>
-    <div class="h-screen relative">
-      <div ref="mapContainer" class="h-full z-[1]"></div>
+    <div class="relative">
+      <div ref="mapContainer" class="h-full z-[1] page-container"></div>
       <div class="absolute top-5 right-5 z-[1] flex gap-6">
           <button @click="() => { showConfirmationModal = true }" class="bg-white 
           hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
@@ -148,7 +156,7 @@ import { toast } from 'vue3-toastify';
           hover:-translate-y-1 hover:scale-125">
           Je laisse ma voiture
         </button>
-        <button class="bg-white px-4 rounded-lg 
+        <button @click="setView" class="bg-white px-4 rounded-lg 
           transition ease-in-out delay-75 drop-shadow-lg
           hover:-translate-y-1 hover:scale-125 hover:bg-slate-100">
           <i class="zmdi zmdi-gps-dot"></i>

@@ -12,6 +12,10 @@
             userId: {
                 type: String,
                 default: 0
+            },
+            fixed: {
+                type: Boolean,
+                default: false
             }
         },
         setup(){
@@ -35,7 +39,7 @@
 </script>
 
 <template>
-    <header class="flex justify-between items-center py-2 px-5 w-full h-[75px]">
+    <header :class="{ 'fixed': fixed }" class="flex justify-between items-center py-2 px-5 w-full h-[75px]">
         <RouterLink to="/">
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
         </RouterLink>

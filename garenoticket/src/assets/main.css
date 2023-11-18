@@ -9,7 +9,7 @@ body{
 }
 
 .page-container {
-    min-height: calc(100vh - 75px - 100px);
+    min-height: calc(100vh - 75px);
 }
 
 
