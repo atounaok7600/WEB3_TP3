@@ -179,7 +179,7 @@ import { toast } from 'vue3-toastify';
             </button>
           </div>
         <div v-if="users" @mouseover="handleMouseEnter" @mouseleave="handleMouseLeave"
-         class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto" :class="{ 'table-hovered': isTableHovered }">
+         class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto table-container" :class="{ 'table-hovered': isTableHovered }">
           <table class="table-auto">
             <thead class="">
               <tr class="">
@@ -248,7 +248,7 @@ import { toast } from 'vue3-toastify';
   }
 
   .table-hovered {
-    margin-right: -750px; /* Ajustez la valeur en fonction de la largeur de votre tableau à masquer */
+    margin-right: -750px;
   }
 
   .table-container table {
