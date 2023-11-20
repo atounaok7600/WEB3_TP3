@@ -50,8 +50,6 @@ import { toast } from 'vue3-toastify';
       isParked = car.value.isParked;
     }
 
-    console.log('isParked: ' + isParked)
-
     if(!marker){
 
       marker = L.marker([coords.lat.value, coords.lng.value], { icon: redIcon, draggable: !isParked })
@@ -217,11 +215,11 @@ import { toast } from 'vue3-toastify';
     <div class="relative">
       <div ref="mapContainer" class="h-full z-[1] page-container"></div>
       <div class="absolute top-5 right-5 z-[1]">
-        <div v-if="car" class="">
-          <div v-if="car.isMoving" class="px-4 py-2 h-[15vh] rounded-lg shadow-md img-carMoving flex justify-center items-center">
+        <div v-if="car">
+          <div v-if="car.isMoving" class="px-4 py-2 h-[30vh] w-[25vw] rounded-lg shadow-md img-carMoving flex justify-center items-end">
             <p class="font-thin text-center bg-white px-2 py-1 rounded-lg">Votre voiture est en cours de déplacement</p>
           </div>
-          <div v-else class=" flex gap-6">
+          <div v-if="!car.isMoving" class=" flex gap-6">
             <button v-if="car.isParked" @click="carTaken" class="bg-white 
               hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
               transition ease-in-out delay-75 drop-shadow-lg
@@ -274,7 +272,7 @@ import { toast } from 'vue3-toastify';
 
 <style scoped>
   .img-carMoving{
-    background-image: url("../assets/carMoving.gif");
+    background-image: url("../assets/carMoving3.gif");
     background-size: cover;
     background-position: center;
   }
