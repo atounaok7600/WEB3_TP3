@@ -44,7 +44,12 @@ import { toast } from 'vue3-toastify';
       iconSize: [35, 35]
     })
 
-    const isParked = car.value.isParked;
+    let isParked = true;
+
+    if (car.value){
+      isParked = car.value.isParked;
+    }
+
     console.log('isParked: ' + isParked)
 
     if(!marker){
@@ -242,6 +247,7 @@ import { toast } from 'vue3-toastify';
             hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
             transition ease-in-out delay-75 drop-shadow-lg
             hover:-translate-y-1 hover:scale-125">
+            <i class="zmdi zmdi-plus me-2"></i>
             Ajouter une voiture
           </a>
           <button @click="setView" class="bg-white px-4 py-2 rounded-lg 
