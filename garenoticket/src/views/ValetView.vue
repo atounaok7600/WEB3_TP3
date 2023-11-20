@@ -19,6 +19,8 @@ import { toast } from 'vue3-toastify';
   const users = ref(null);
   const showConfirmationModal = ref(false);
 
+  const isTableHovered = ref(false);
+
   // Permet de demander la localisation du valet.
   const getLocation = () => {
     if(navigator.geolocation){
@@ -135,6 +137,14 @@ import { toast } from 'vue3-toastify';
     return `${String(seconds)} secondes`
   }
 
+  const handleMouseEnter = () => {
+    isTableHovered.value = false;
+  }
+
+  const handleMouseLeave = () => {
+    isTableHovered.value = true;
+  }
+
   onMounted(async () => {
     // Initialiser la carte
     map.value = L.map(mapContainer.value).setView([51.505, -0.09], 13);
@@ -168,7 +178,8 @@ import { toast } from 'vue3-toastify';
               <i class="zmdi zmdi-gps-dot"></i>
             </button>
           </div>
-        <div v-if="users" class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[50vh] overflow-auto">
+        <div v-if="users" @mouseover="handleMouseEnter" @mouseleave="handleMouseLeave"
+         class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto" :class="{ 'table-hovered': isTableHovered }">
           <table class="table-auto">
             <thead class="">
               <tr class="">
@@ -230,7 +241,22 @@ import { toast } from 'vue3-toastify';
     background-position: center;
   }
 
-  td{
-    
+  .table-container {
+    transition: margin-right 0.5s ease-out;
+    margin-right: 0;
+    overflow: hidden;
+  }
+
+  .table-hovered {
+    margin-right: -750px; /* Ajustez la valeur en fonction de la largeur de votre tableau à masquer */
+  }
+
+  .table-container table {
+    transition: opacity 5s ease-out;
+    opacity: 1;
+  }
+
+  .table-hidden table {
+    opacity: 0;
   }
 </style>
