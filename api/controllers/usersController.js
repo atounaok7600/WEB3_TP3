@@ -120,8 +120,6 @@ exports.updateCar = async (req, res, next) => {
   }
  }
 
-
-
 exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.user.userId;
