@@ -167,7 +167,7 @@ import { toast } from 'vue3-toastify';
 
 <template>
   <AppLayout>
-    <div class="relative">
+    <div class="relative overflow-x-hidden">
       <div ref="mapContainer" class="h-full z-[1] page-container"></div>
 
       <div class="absolute top-5 right-5 z-[1]  rounded-lg flex flex-col gap-4">
@@ -179,7 +179,7 @@ import { toast } from 'vue3-toastify';
             </button>
           </div>
         <div v-if="users" @mouseover="handleMouseEnter" @mouseleave="handleMouseLeave"
-         class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[60vh] overflow-auto table-container" :class="{ 'table-hovered': isTableHovered }">
+         class="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-md max-h-[50vh] overflow-auto table-container" :class="{ 'table-hovered': isTableHovered }">
           <table class="table-auto">
             <thead class="">
               <tr class="">
@@ -244,7 +244,6 @@ import { toast } from 'vue3-toastify';
   .table-container {
     transition: margin-right 0.5s ease-out;
     margin-right: 0;
-    overflow: hidden;
   }
 
   .table-hovered {
