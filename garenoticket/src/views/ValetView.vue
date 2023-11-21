@@ -89,6 +89,9 @@ import { toast } from 'vue3-toastify';
 
       if(response.ok){
           const data = await response.json();
+          if(!data.user.isValet){
+            window.location.href = '/maplace'
+          }
           valet.value = data.user;
       }else{
           window.location.href = '/login'
@@ -251,7 +254,7 @@ import { toast } from 'vue3-toastify';
   }
 
   .table-container table {
-    transition: opacity 5s ease-out;
+    transition: opacity 0.5s ease-out;
     opacity: 1;
   }
 

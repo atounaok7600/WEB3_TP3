@@ -6,16 +6,7 @@
         data(){
             return{
                 imgSrc: '',
-            }
-        },
-        props:{
-            userId: {
-                type: String,
-                default: 0
-            },
-            fixed: {
-                type: Boolean,
-                default: false
+                user: null,
             }
         },
         setup(){
@@ -23,17 +14,49 @@
         },
         methods: {     
             userExist(){
-                if(this.userId){
-                    this.imgSrc = `https://i.pravatar.cc/1000?u=${this.userId}`
+                if(this.user){
+                    this.imgSrc = `https://i.pravatar.cc/1000?u=${this.user._id}`
                     return true
                 }else{
                     return false
                 }
-            },    
+            },  
+            userIsValet() {
+                if(this.user){
+                    return this.user.isValet ? true : false;
+                }
+            },
             handleLogout() {
                 localStorage.removeItem('token');
                 window.location.href = '/login';
-            }
+            },
+              // On cherche le valet dans la bd
+            async getUser() {
+                try {
+                const response = await fetch(`http://localhost:3000/user/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                });
+
+                if(response.ok){
+                    const data = await response.json();
+                    if (data.user) {
+                        this.user = data.user;
+                    } else {
+                        window.location.href = '/login';
+                    }
+                }else{
+                    window.location.href = '/login'
+                }
+                } catch (error) {
+                console.log(error)
+                }
+            },
+        },
+        created() {
+            this.getUser();
         },
     }
 </script>
@@ -46,10 +69,10 @@
 
         <nav class="flex gap-2">
             <RouterLink to="/" class="py-2 px-4 hover:bg-slate-200 rounded-md">Accueil</RouterLink>
-            <RouterLink to="/maplace" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-map"></i>Ma place</RouterLink>
-            <RouterLink to="/valet" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-car"></i>Valet</RouterLink>
+            <RouterLink v-if="userIsValet() === false" to="/maplace" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-map"></i>Ma place</RouterLink>
+            <RouterLink v-if="userIsValet() === true" to="/valet" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-car"></i>Valet</RouterLink>
             <RouterLink to="/profil" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md">
-                <img :src="userExist() ? this.imgSrc : 'https://i.pravatar.cc/1000?u=${this.userId}'" class="w-[20px] h-[20px] rounded-md object-cover" alt="-">
+                <img :src="userExist() ? this.imgSrc : 'https://i.pravatar.cc/1000?u=rien'" class="w-[20px] h-[20px] rounded-md object-cover" alt="-">
                 Profil
             </RouterLink>
             <button @click="handleLogout" class="

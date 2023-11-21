@@ -77,6 +77,9 @@ import { toast } from 'vue3-toastify';
 
       if(response.ok){
           const data = await response.json();
+          if(data.user.isValet){
+            window.location.href = '/valet'
+          }
           user.value = data.user;
           if(data.user.voiture){
             car.value = data.user.voiture;

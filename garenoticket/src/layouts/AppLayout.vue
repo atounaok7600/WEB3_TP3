@@ -20,7 +20,7 @@
 
 <template>
     <div class="min-w-screen min-h-screen flex flex-col">
-        <Navbar :userId="usersId"/>
+        <Navbar/>
 
         <div>
             <slot></slot>
