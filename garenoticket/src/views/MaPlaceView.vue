@@ -162,7 +162,7 @@ import moment from 'moment-timezone'
   
         if(response.ok){
             toast.success('Voiture récupérée.', {
-                autoClose: 2000
+                autoClose: 1000
             });
   
             const data = await response.json();
@@ -173,7 +173,7 @@ import moment from 'moment-timezone'
 
             setTimeout(() => {
               window.location.href = '/maplace'
-            }, 2000)
+            }, 1000)
 
         } else {
             const errorData = await response.json();

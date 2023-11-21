@@ -132,6 +132,11 @@ import moment from 'moment-timezone'
     updateValetMarkerPosition();
   }
 
+  // Focus sur la position actuelle de la voiture
+  const viewCar = (latitude, longitude) => {
+    map.value.setView([latitude, longitude], 15);
+  }
+
   // Converti le temps en secondes
   const timeConvertion = (utcTime) => {
     const targetTime = moment.utc(utcTime).tz('America/Toronto');
@@ -145,7 +150,7 @@ import moment from 'moment-timezone'
       return "Temps écoulé!"
     }
 
-    return timeRemainingInSeconds + ' secondes';
+    return timeRemainingInSeconds + ' s';
   }
 
   const handleMouseEnter = () => {
@@ -198,7 +203,7 @@ import moment from 'moment-timezone'
             <button @click="setView" class="bg-white px-4 py-2 rounded-lg h-fit
               transition ease-in-out delay-75 drop-shadow-lg
               hover:-translate-y-1 hover:scale-125 hover:bg-slate-100">
-              <i class="zmdi zmdi-gps-dot"></i>
+              <i class="zmdi zmdi-gps-dot text-red-600"></i>
             </button>
           </div>
         <div v-if="users" @mouseover="handleMouseEnter" @mouseleave="handleMouseLeave"
@@ -222,9 +227,12 @@ import moment from 'moment-timezone'
                 <td class=" p-4">{{ user.voiture.modele }}</td>
                 <td class=" p-4">{{ user.voiture.plaque }}</td>
                 <td class=" p-4">{{ user.voiture.couleur }}</td>
-                <td class=" p-4 max-w-[100px]">{{ timeRemaingPerUser[index] }}</td>
-                <td class="p-4">
-                  <button class="bg-green-400 hover:bg-green-300 px-2 py-2 rounded-md w-full">Déplacer</button>
+                <td class=" p-4 max-w-[200px]">{{ timeRemaingPerUser[index] }}</td>
+                <td class="p-2 flex gap-4">
+                  <button @click="viewCar(user.voiture.latitude, user.voiture.longitude)" class="bg-white border px-4 py-2 rounded-lg h-fit hover:bg-slate-100">
+                    <i class="zmdi zmdi-gps-dot text-blue-600"></i>
+                  </button>
+                  <button class="bg-green-400 hover:bg-green-300 px-4 py-2 rounded-md w-full">Déplacer</button>
                 </td>
               </tr>
             </tbody>
@@ -270,7 +278,7 @@ import moment from 'moment-timezone'
   }
 
   .table-hovered {
-    margin-right: -750px;
+    margin-right: -40vw;
   }
 
   .table-container table {
