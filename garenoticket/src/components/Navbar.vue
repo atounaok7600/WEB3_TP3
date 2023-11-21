@@ -68,7 +68,6 @@
         </RouterLink>
 
         <nav class="flex gap-2">
-            <RouterLink to="/" class="py-2 px-4 hover:bg-slate-200 rounded-md">Accueil</RouterLink>
             <RouterLink v-if="userIsValet() === false" to="/maplace" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-map"></i>Ma place</RouterLink>
             <RouterLink v-if="userIsValet() === true" to="/valet" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-car"></i>Valet</RouterLink>
             <RouterLink to="/profil" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md">

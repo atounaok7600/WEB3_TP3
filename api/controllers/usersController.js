@@ -42,7 +42,6 @@ exports.getUser = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
     const user = await checkUserExists(userId);
     res.status(200).json({
       user: user
@@ -82,7 +81,7 @@ exports.updateUser = async (req, res, next) => {
 
 exports.updateCar = async (req, res, next) => { 
   try {
-    const userId = req.user.userId;
+    const userId = req.params.userId;
     const user = await checkUserExists(userId);
     let voiture;
 
@@ -98,10 +97,12 @@ exports.updateCar = async (req, res, next) => {
     if (req.body.modele) voiture.modele = req.body.modele;
     if (req.body.couleur) voiture.couleur = req.body.couleur;
     if (req.body.plaque) voiture.plaque = req.body.plaque;
+    voiture.isMoving = req.body.isMoving;
     voiture.isParked = req.body.isParked;
     voiture.latitude = req.body.latitude;
     voiture.longitude = req.body.longitude;
     if (req.body.timeToLeave) voiture.timeToLeave = req.body.timeToLeave;
+    if (req.body.valet) voiture.valet = req.body.valet;
     
     
     const updateVoiture = await voiture.save();

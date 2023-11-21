@@ -3,34 +3,35 @@ import AppLayout from '../layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import L from 'leaflet'
 import mapMarkerRed from '../assets/map-marker-red.svg';
+import mapMarkerBlue from '../assets/map-marker-blue.svg';
 import { toast } from 'vue3-toastify';
 import moment from 'moment-timezone'
+import { useRoute } from 'vue-router';
 
   const coords = {
     lat: ref(0),
     lng: ref(0),
   }
   let marker;
+  let carMarker;
   const map = ref()
+  const route = useRoute();
   const mapContainer = ref()
 
+  const valet = ref(null);
+  const userId = ref(route.params.userId);
   const user = ref(null);
   const car = ref(null);
   const showConfirmationModal = ref(false);
 
-  // Permet de demander la localisation du user.
-  const getLocation = () => {
+
+ // Permet de demander la localisation du valet.
+ const getLocation = () => {
     if(navigator.geolocation){
       navigator.geolocation.watchPosition((pos) => {
 
-        // On vérifie si la voiture est stationnée
-        if(car && car.value && car.value.isParked){
-          coords.lat.value = car.value.latitude;
-          coords.lng.value = car.value.longitude;
-        } else {
-          coords.lat.value = pos.coords.latitude
-          coords.lng.value = pos.coords.longitude
-        }
+        coords.lat.value = pos.coords.latitude
+        coords.lng.value = pos.coords.longitude
 
         // On met le marker au centre
         setView();
@@ -38,35 +39,58 @@ import moment from 'moment-timezone'
     }
   }
 
-  // On ajoute le marker
-  const updateMarkerPosition = () => {
-    const redIcon = new L.Icon({
-      iconUrl: mapMarkerRed,
+  // On ajoute le marker du valet
+  const updateValetMarkerPosition = () => {
+        const redIcon = new L.Icon({
+        iconUrl: mapMarkerRed,
+        iconSize: [35, 35]
+        })
+
+        let isMoving = true;
+
+        if (car.value){
+        isMoving = car.value.isMoving;
+        }
+
+        if(!marker){
+
+        marker = L.marker([coords.lat.value, coords.lng.value], { icon: redIcon, draggable: isMoving})
+        .addTo(map.value)
+        .bindPopup(`Ma position`)
+        .on('dragend', (e) => {
+            const newLatLng = e.target.getLatLng();
+            coords.lat.value = newLatLng.lat;
+            coords.lng.value = newLatLng.lng;
+        });
+        } else {
+        marker.setLatLng([coords.lat.value, coords.lng.value], { icon: redIcon });
+        }
+  }
+
+  // On ajoute le marker des voitures
+  const updateCarsMarkers = () => {
+    const buleIcon = new L.Icon({
+      iconUrl: mapMarkerBlue,
       iconSize: [35, 35]
     })
 
-    let isParked = true;
+    // Supprimer tous les marqueurs bleu
+    map.value.eachLayer((layer) => {
+      if(layer.options.icon && layer.options.icon.options.iconUrl === mapMarkerBlue) {
+        map.value.removeLayer(layer);
+      }
+    })
 
-    if (car.value){
-      isParked = car.value.isParked;
-    }
-
-    if(!marker){
-      marker = L.marker([coords.lat.value, coords.lng.value], { icon: redIcon, draggable: !isParked && !car.value.isMoving })
-      .addTo(map.value)
-      .bindPopup(car.value && !car.value.isMoving? 'Ma voiture' : 'Ma position')
-      .on('dragend', (e) => {
-        const newLatLng = e.target.getLatLng();
-        coords.lat.value = newLatLng.lat;
-        coords.lng.value = newLatLng.lng;
-      });
-    } else {
-      marker.setLatLng([coords.lat.value, coords.lng.value], { icon: redIcon, draggable: !isParked });
+    // Ajouter les nouveaux marqueurs bleu
+    if(car.value && car.value.isParked && car.value.latitude && car.value.longitude){
+        carMarker = L.marker([car.value.latitude, car.value.longitude], { icon: buleIcon })
+        .addTo(map.value)
+        .bindPopup(`Véhicule de ${user.value.username}`)
     }
   }
 
-  // On cherche le user et sa voiture
-  const getUserCar = async () => {
+  // On cherche le valet dans la bd
+  const getValet = async () => {
     try {
       const response = await fetch(`http://localhost:3000/user/`, {
           method: 'GET',
@@ -77,13 +101,10 @@ import moment from 'moment-timezone'
 
       if(response.ok){
           const data = await response.json();
-          if(data.user.isValet){
-            window.location.href = '/valet'
+          if(!data.user.isValet){
+            window.location.href = '/maplace'
           }
-          user.value = data.user;
-          if(data.user.voiture){
-            car.value = data.user.voiture;
-          }
+          valet.value = data.user;
       }else{
           window.location.href = '/login'
       }
@@ -92,16 +113,68 @@ import moment from 'moment-timezone'
     }
   }
 
+  // On cherche toutes les voitures stationnées
+  const getCar = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/user/${userId.value}`, {
+            method: 'GET',
+        });
+
+      if(response.ok){
+        const data = await response.json();
+        user.value = data.user;
+        car.value = user.value.voiture
+
+        if(car.value.latitude && car.value.longitude){
+            updateCarsMarkers();
+        }
+
+      }else{
+        console.log("Erreur lors de la récupération de la voiture")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Focus sur la position actuelle
+  const setView = () => {
+    map.value.setView([coords.lat.value, coords.lng.value]);
+    updateValetMarkerPosition();
+  }
+
+  // Focus sur la position actuelle de la voiture
+  const viewCar = (latitude, longitude) => {
+    map.value.setView([latitude, longitude], 15);
+  }
+
+  // Converti le temps en secondes
+  const timeConvertion = (utcTime) => {
+    const targetTime = moment.utc(utcTime).tz('America/Toronto');
+    const now = new Date();
+
+    const timeDifference = targetTime - now;
+
+    const timeRemainingInSeconds = Math.floor(timeDifference / 1000);
+
+    if(timeRemainingInSeconds <= 0) {
+      return "Temps écoulé!"
+    }
+
+    return timeRemainingInSeconds + ' s';
+  }
+
   // Fonction lorsque la voiture est stationnée. 
   const carParked = async () => {
     if(car.value){
       car.value.isParked = true;
+      car.value.isMoving = false;
       car.value.latitude = coords.lat.value;
       car.value.longitude = coords.lng.value;
       car.value.timeToLeave = timeToLeaveCalc();
       console.log(timeToLeaveCalc())
       try {
-        const response = await fetch(`http://localhost:3000/car/${user.value._id}`, {
+        const response = await fetch(`http://localhost:3000/car/${userId.value}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,9 +194,10 @@ import moment from 'moment-timezone'
 
             // On met le marker au centre
             getLocation();
+            updateCarsMarkers();
 
             setTimeout(() => {
-              window.location.href = '/maplace'
+                window.location.href = `/movecar/${userId.value}`
             }, 2000)
 
         } else {
@@ -135,7 +209,7 @@ import moment from 'moment-timezone'
           console.error("Erreur lors de l'envoi des données", error);
       }
     } else{
-      toast.error("Vous n'avez pas de voiture lier à votre compte. Ajoutez-en une pour continuer.", {
+      toast.error("Aucune voiture au dossier.", {
           autoClose: 5000
       });
     }
@@ -146,11 +220,13 @@ import moment from 'moment-timezone'
   const carTaken = async () => {
     if(car.value){
       car.value.isParked = false;
+      car.value.isMoving = true;
+      car.value.valet = valet.value._id;
       car.value.latitude = null;
       car.value.longitude = null;
       car.value.timeToLeave = null;
       try {
-        const response = await fetch(`http://localhost:3000/car/${user.value._id}`, {
+        const response = await fetch(`http://localhost:3000/car/${userId.value}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -166,12 +242,15 @@ import moment from 'moment-timezone'
   
             const data = await response.json();
             car.value = data.voiture ? data.voiture : null;
-
+            console.log('Data lat: ' + car.value.latitude)
+            console.log('Data long: ' + car.value.longitude)
+            
             // On affiche le marker sur la position du user.
             getLocation();
+            updateCarsMarkers();
 
             setTimeout(() => {
-              window.location.href = '/maplace'
+              window.location.href = `/movecar/${userId.value}`
             }, 1000)
 
         } else {
@@ -183,22 +262,15 @@ import moment from 'moment-timezone'
           console.error("Erreur lors de l'envoi des données", error);
       }
     } else{
-      toast.error("Vous n'avez pas de voiture lier à votre compte. Ajoutez-en une pour continuer.", {
+      toast.error("Cette voiture n'existe pas au dossier.", {
           autoClose: 5000
       });
     }
   }
 
-  // Focus sur la position actuelle
-  const setView = () => {
-    map.value.setView([coords.lat.value, coords.lng.value]);
-    updateMarkerPosition();
-  }
-
   // Calcul le temps restant avant de devoir changer de stationnement
   const timeToLeaveCalc = () => {
     const now = new Date();
-    console.log('Now: ' + now)
 
     // Parking gratuit de 11h à 12h30
     const freeParkingStart1 = new Date(now);
@@ -213,9 +285,7 @@ import moment from 'moment-timezone'
     freeParkingEnd2.setDate(freeParkingEnd2.getDate() + 1) 
     freeParkingEnd2.setHours(9, 0, 0, 0);
 
-    console.log('durée 2: ' + freeParkingEnd2)
     const verite = now <= freeParkingEnd2;
-    console.log('La verité: ' + verite)
 
     // Si la voiture est stationnée avant 9h
     if(now.getHours() < 9){
@@ -236,7 +306,6 @@ import moment from 'moment-timezone'
       const targetTime = new Date(now);
       targetTime.setDate(now.getDate() + 1);
       targetTime.setHours(9, 0, 0, 0);
-      console.log('à demain: ' + targetTime)
       return targetTime;
     }
 
@@ -256,10 +325,14 @@ import moment from 'moment-timezone'
     }).addTo(map.value);
     
     // On charge le user et la voiture
-    await getUserCar();
+    await getValet();
+    await getCar();
 
     // Obtenir la localisation du user
     getLocation();
+
+    // Fait couler le temps restant des véhicules stationnés
+    //setInterval(updateRemainingTime, 1000);
 
   });
 </script>
@@ -270,50 +343,34 @@ import moment from 'moment-timezone'
       <div ref="mapContainer" class="h-full z-[1] page-container"></div>
       <div class="absolute top-5 right-5 z-[1]">
         <div v-if="car">
-          <div v-if="car.isMoving" class="px-4 py-2 h-[30vh] w-[25vw] rounded-lg shadow-md img-carMoving flex justify-center items-end">
-            <p class="font-thin text-center bg-white px-2 py-1 rounded-lg">Votre voiture est en cours de déplacement</p>
-          </div>
-          <div v-if="!car.isMoving" class=" flex gap-6">
+          <div class="flex gap-6">
             <button v-if="car.isParked" @click="carTaken" class="bg-white 
               hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
               transition ease-in-out delay-75 drop-shadow-lg
               hover:-translate-y-1 hover:scale-110">
-              J'ai récupéré ma voiture
+              Je déplace la voiture
             </button>
+
             <button v-else @click="() => { showConfirmationModal = true }" class="bg-white 
               hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
               transition ease-in-out delay-75 drop-shadow-lg
               hover:-translate-y-1 hover:scale-125">
-              Je laisse ma voiture
+              Je laisse la voiture
             </button>
+
             <button @click="setView" class="bg-white px-4 py-2 rounded-lg 
               transition ease-in-out delay-75 drop-shadow-lg
               hover:-translate-y-1 hover:scale-125 hover:bg-slate-100">
-              <i class="zmdi zmdi-gps-dot"></i>
+              <i class="zmdi zmdi-gps-dot text-red-600"></i>
             </button>
           </div>
-        </div>
-
-        <div v-else class="flex gap-6">
-          <a href="/profil"  class="bg-white 
-            hover:bg-slate-100 py-2 px-4 rounded-lg font-thin
-            transition ease-in-out delay-75 drop-shadow-lg
-            hover:-translate-y-1 hover:scale-125">
-            <i class="zmdi zmdi-plus me-2"></i>
-            Ajouter une voiture
-          </a>
-          <button @click="setView" class="bg-white px-4 py-2 rounded-lg 
-            transition ease-in-out delay-75 drop-shadow-lg
-            hover:-translate-y-1 hover:scale-125 hover:bg-slate-100">
-            <i class="zmdi zmdi-gps-dot"></i>
-          </button>
         </div>
       </div>
 
       <!-- Model de confirmation de stationnement -->
       <div v-if="showConfirmationModal" class="modal-overlay z-[2]">
         <div class="modal bg-white w-[20vw] p-6 rounded-lg flex flex-col gap-8">
-            <p class="text-center text-lg font-thin">Veuillez vérifier que votre voiture est bien stationnée à l'endroit indiqué sur la carte, ou déplacer le marqueur sur la position de votre voiture.</p>
+            <p class="text-center text-lg font-thin">Veuillez vérifier que la voiture est bien stationnée à l'endroit indiqué sur la carte, ou déplacer le marqueur sur la position de votre voiture.</p>
             <div class="flex justify-between gap-8">
                 <button @click="carParked" class="border py-2 w-full text-white bg-green-600 hover:bg-green-500 rounded-md flex items-center justify-center gap-2">Je confirme</button>
                 <button @click="() => { showConfirmationModal = false }" class="border py-2 w-full  hover:bg-slate-200 rounded-md">Annuler</button>

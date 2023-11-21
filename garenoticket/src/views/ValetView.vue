@@ -232,7 +232,9 @@ import moment from 'moment-timezone'
                   <button @click="viewCar(user.voiture.latitude, user.voiture.longitude)" class="bg-white border px-4 py-2 rounded-lg h-fit hover:bg-slate-100">
                     <i class="zmdi zmdi-gps-dot text-blue-600"></i>
                   </button>
-                  <button class="bg-green-400 hover:bg-green-300 px-4 py-2 rounded-md w-full">Déplacer</button>
+                  <router-link :to="{ name: 'Déplacer', params: { userId: user._id } }" class="bg-green-400 hover:bg-green-300 px-4 py-2 rounded-md w-full">
+                    Déplacer
+                  </router-link>
                 </td>
               </tr>
             </tbody>
@@ -278,7 +280,7 @@ import moment from 'moment-timezone'
   }
 
   .table-hovered {
-    margin-right: -40vw;
+    margin-right: -41vw;
   }
 
   .table-container table {
