@@ -101,7 +101,7 @@ exports.updateCar = async (req, res, next) => {
     voiture.isParked = req.body.isParked;
     voiture.latitude = req.body.latitude;
     voiture.longitude = req.body.longitude;
-    voiture.timeToLeave = req.body.timeToLeave;
+    if (req.body.timeToLeave) voiture.timeToLeave = req.body.timeToLeave;
     
     
     const updateVoiture = await voiture.save();

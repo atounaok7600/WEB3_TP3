@@ -7,8 +7,13 @@
     components: {
       AppLayout
     },
+    data() {
+      return{
+        time: new Date()
+      }
+    },
     setup() {
-
+      
     }
   }
 </script>
@@ -16,7 +21,7 @@
 <template>
   <AppLayout>
     <div class="page-container flex items-center justify-center">
-      Home page
+      {{ time.getHours() }}
     </div>
   </AppLayout>
 </template>

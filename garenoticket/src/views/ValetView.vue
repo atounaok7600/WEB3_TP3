@@ -5,6 +5,7 @@ import L from 'leaflet'
 import mapMarkerRed from '../assets/map-marker-red.svg';
 import mapMarkerBlue from '../assets/map-marker-blue.svg';
 import { toast } from 'vue3-toastify';
+import moment from 'moment-timezone'
 
   const coords = {
     lat: ref(0),
@@ -17,6 +18,7 @@ import { toast } from 'vue3-toastify';
 
   const valet = ref(null);
   const users = ref(null);
+  const timeRemaingPerUser = ref([])
   const showConfirmationModal = ref(false);
 
   const isTableHovered = ref(false);
@@ -114,6 +116,7 @@ import { toast } from 'vue3-toastify';
       if(response.ok){
           const data = await response.json();
           users.value = data.users;
+
           updateCarsMarkers();
       }else{
           window.location.href = '/login'
@@ -130,14 +133,19 @@ import { toast } from 'vue3-toastify';
   }
 
   // Converti le temps en secondes
-  const timeConvertion = (time) => {
+  const timeConvertion = (utcTime) => {
+    const targetTime = moment.utc(utcTime).tz('America/Toronto');
     const now = new Date();
-    const timeToLeave = new Date(time);
-    const timeDiffSeconds = Math.floor((timeToLeave - now) / 1000);
 
-    const seconds = timeDiffSeconds % 60;
+    const timeDifference = targetTime - now;
 
-    return `${String(seconds)} secondes`
+    const timeRemainingInSeconds = Math.floor(timeDifference / 1000);
+
+    if(timeRemainingInSeconds <= 0) {
+      return "Temps écoulé!"
+    }
+
+    return timeRemainingInSeconds + ' secondes';
   }
 
   const handleMouseEnter = () => {
@@ -146,6 +154,15 @@ import { toast } from 'vue3-toastify';
 
   const handleMouseLeave = () => {
     isTableHovered.value = true;
+  }
+
+  // Fait couler les secondes restantes
+  const updateRemainingTime = () => {
+    if(users.value){
+      timeRemaingPerUser.value = users.value.map(user => {
+      return timeConvertion(user.voiture.timeToLeave);
+    });
+    }
   }
 
   onMounted(async () => {
@@ -164,6 +181,9 @@ import { toast } from 'vue3-toastify';
 
     // Obtenir la localisation du user
     getLocation();
+
+    // Fait couler le temps restant des véhicules stationnés
+    setInterval(updateRemainingTime, 1000);
 
   });
 </script>
@@ -196,13 +216,13 @@ import { toast } from 'vue3-toastify';
               </tr>
             </thead>
             <tbody>
-              <tr class="font-thin text-center" v-for="user in users" :key="user._id">
+              <tr class="font-thin text-center" v-for="(user, index) in users" :key="user._id">
                 <td class=" p-4">{{ user.username }}</td>
                 <td class=" p-4">{{ user.voiture.marque }}</td>
                 <td class=" p-4">{{ user.voiture.modele }}</td>
                 <td class=" p-4">{{ user.voiture.plaque }}</td>
                 <td class=" p-4">{{ user.voiture.couleur }}</td>
-                <td class=" p-4">{{ timeConvertion(user.voiture.timeToLeave)  }}</td>
+                <td class=" p-4 max-w-[100px]">{{ timeRemaingPerUser[index] }}</td>
                 <td class="p-4">
                   <button class="bg-green-400 hover:bg-green-300 px-2 py-2 rounded-md w-full">Déplacer</button>
                 </td>

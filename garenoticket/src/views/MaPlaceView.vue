@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import L from 'leaflet'
 import mapMarkerRed from '../assets/map-marker-red.svg';
 import { toast } from 'vue3-toastify';
+import moment from 'moment-timezone'
 
   const coords = {
     lat: ref(0),
@@ -92,13 +93,14 @@ import { toast } from 'vue3-toastify';
     }
   }
 
-  // Fonction lorsque la voiture est laissée. 
+  // Fonction lorsque la voiture est stationnée. 
   const carParked = async () => {
     if(car.value){
       car.value.isParked = true;
       car.value.latitude = coords.lat.value;
       car.value.longitude = coords.lng.value;
-      car.value.timeToLeave = new Date();
+      car.value.timeToLeave = timeToLeaveCalc();
+      console.log(timeToLeaveCalc())
       try {
         const response = await fetch(`http://localhost:3000/car/${user.value._id}`, {
             method: 'PUT',
@@ -192,6 +194,56 @@ import { toast } from 'vue3-toastify';
   const setView = () => {
     map.value.setView([coords.lat.value, coords.lng.value]);
     updateMarkerPosition();
+  }
+
+  // Calcul le temps restant avant de devoir changer de stationnement
+  const timeToLeaveCalc = () => {
+    const now = new Date();
+    console.log('Now: ' + now)
+
+    // Parking gratuit de 11h à 12h30
+    const freeParkingStart1 = new Date(now);
+    freeParkingStart1.setHours(11, 0, 0, 0);
+    const freeParkingEnd1= new Date(now); 
+    freeParkingEnd1.setHours(12, 30, 0, 0);
+
+    // Parking gratuit de 17h à 9h le lendemain
+    const freeParkingStart2 = new Date(now);
+    freeParkingStart2.setHours(17, 0, 0, 0);
+    const freeParkingEnd2 = new Date(now);
+    freeParkingEnd2.setDate(freeParkingEnd2.getDate() + 1) 
+    freeParkingEnd2.setHours(9, 0, 0, 0);
+
+    console.log('durée 2: ' + freeParkingEnd2)
+    const verite = now <= freeParkingEnd2;
+    console.log('La verité: ' + verite)
+
+    // Si la voiture est stationnée avant 9h
+    if(now.getHours() < 9){
+      const targetTime = new Date(now);
+      targetTime.setHours(10, 0, 0, 0);
+      return targetTime;
+    }
+
+    // Si la voiture est stationnée entre 11h et 12h30
+    if(now >= freeParkingStart1 && now <= freeParkingEnd1){
+      const targetTime = new Date(now)
+      targetTime.setHours(13, 30, 0, 0);
+      return targetTime;
+    }
+
+    // Si la voiture est stationnée après 16h
+    if(now >= freeParkingStart2 && now <= freeParkingEnd2){
+      const targetTime = new Date(now);
+      targetTime.setDate(now.getDate() + 1);
+      targetTime.setHours(9, 0, 0, 0);
+      console.log('à demain: ' + targetTime)
+      return targetTime;
+    }
+
+    // Sinon le temps de stationnement est limité à une heure
+    const targetTime = new Date(now.getTime() + 60 * 60 * 1000);
+    return targetTime;
   }
 
   onMounted(async () => {
