@@ -63,13 +63,14 @@
 
 <template>
     <header class="flex justify-between items-center py-2 px-5 w-full h-[75px]">
-        <RouterLink to="/">
+        <RouterLink to="maplace">
             <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
         </RouterLink>
 
         <nav class="flex gap-2">
             <RouterLink v-if="userIsValet() === false" to="/maplace" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-map"></i>Ma place</RouterLink>
             <RouterLink v-if="userIsValet() === true" to="/valet" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-car"></i>Valet</RouterLink>
+            <RouterLink v-if="userIsValet() === false" to="/transaction" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md"><i class="zmdi zmdi-receipt"></i>Transaction</RouterLink>
             <RouterLink to="/profil" class="py-2 px-4 hover:bg-slate-200 flex items-center gap-2 rounded-md">
                 <img :src="userExist() ? this.imgSrc : 'https://i.pravatar.cc/1000?u=rien'" class="w-[20px] h-[20px] rounded-md object-cover" alt="-">
                 Profil

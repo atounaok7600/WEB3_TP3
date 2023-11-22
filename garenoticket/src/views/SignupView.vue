@@ -1,5 +1,4 @@
 <script>
-    import { RouterLink, RouterView } from 'vue-router'
     import AuthLayout from '../layouts/AuthLayout.vue'
     import AuthInput from '../components/AuthInput.vue'
     import { toast } from 'vue3-toastify';

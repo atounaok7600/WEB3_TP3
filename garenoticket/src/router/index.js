@@ -5,6 +5,7 @@ import MaPlaceView from '../views/MaPlaceView.vue'
 import ValetView from '../views/ValetView.vue'
 import ProfilView from '../views/ProfilView.vue'
 import MoveCarView from '../views/MoveCarView.vue'
+import TransactView from '../views/TransactView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/movecar/:userId",
       name: 'Déplacer',
       component: MoveCarView
+    },
+    {
+      path: "/transaction",
+      name: 'transaction',
+      component: TransactView
     },
   ]
 })
