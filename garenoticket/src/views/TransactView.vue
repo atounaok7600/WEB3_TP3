@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from '../layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
+import { toast } from 'vue3-toastify';
 
 const user = ref(null);
 const solde = ref(0);
@@ -60,6 +61,21 @@ const getBills = async () => {
     }
 }
 
+// Formatage de la date
+const formatDate = (dateString) => {
+    const dateObj = new Date(dateString);
+
+    const annee = dateObj.getFullYear();
+    const mois = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const jour = dateObj.getDate().toString().padStart(2, '0');
+    const heure = dateObj.getHours().toString().padStart(2, '0');
+    const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+
+    const dateFormatee = `${annee}-${mois}-${jour} ${heure}:${minutes}`;
+
+    return dateFormatee;
+}
+
 // Permet d'obtenir un historique des déplacements
 const getDeplacements = () => {
     deplacements.value = [];
@@ -76,7 +92,13 @@ const effectuerPaiement = async () => {
         });
 
         if(response.ok){
+            toast.success('Solde payé.', {
+                autoClose: 2000
+            });
+
             await getHistorique();
+            await getBills();
+            solde.value = 0;
         }
     } catch (error) {
         console.log(error)
@@ -141,7 +163,7 @@ onMounted(async () => {
 
                 <div v-if="factures" class="h-full flex flex-col gap-2">
                     <li class=" list-none border bg-slate-100 px-4 py-2 text-center font-thin rounded-md" v-for="facture in factures">
-                     {{ facture.createdAt }} - {{ facture.price }} $
+                     {{ formatDate(facture.createdAt) }} - {{ facture.price }} $
                     </li>
                 </div>
 
@@ -160,7 +182,7 @@ onMounted(async () => {
 
                 <div v-if="historique" class="h-full flex flex-col gap-2">
                     <li class=" list-none border bg-slate-100 px-4 py-2 text-center font-thin rounded-md" v-for="deplacement in historique">
-                     {{ deplacement.createdAt }} - {{ deplacement.price }} $ - {{ deplacement.isPaid ? "Payé" : "Non payé" }}
+                     {{ formatDate(deplacement.createdAt) }} - {{ deplacement.price }} $ - {{ deplacement.isPaid ? "Payé" : "Non payé" }}
                     </li>
                 </div>
 

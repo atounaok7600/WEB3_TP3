@@ -37,17 +37,19 @@ exports.effectuerPaiement = async (req, res, next) => {
       total += item.price
     });
     
-    const histo = await Histo
-    .updateMany(
-      { userId: userId, isPaid: false },
-      { $set: { isPaid: true } },
-      { new: true });
+    if(total > 0){
+      const histo = await Histo
+      .updateMany(
+        { userId: userId, isPaid: false },
+        { $set: { isPaid: true } },
+        { new: true });
 
-
-    await Facture.create({
-      userId: userId,
-      price: total
-    })
+        
+      await Facture.create({
+        userId: userId,
+        price: total
+      })
+    }
     
     res.status(200).json({});
   } catch (err) {
