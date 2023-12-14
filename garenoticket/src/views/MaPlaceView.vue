@@ -17,6 +17,8 @@ import moment from 'moment-timezone'
   const user = ref(null);
   const car = ref(null);
   const showConfirmationModal = ref(false);
+  const solde = ref(0);
+  const historique = ref(null);
 
   // Permet de demander la localisation du user.
   const getLocation = () => {
@@ -245,6 +247,37 @@ import moment from 'moment-timezone'
     return targetTime;
   }
 
+  // Permet d'obtenir le montant total du solde à payer
+const getSolde = () => {
+    historique.value.forEach((deplacement) => {
+        if(!deplacement.isPaid){
+            solde.value += deplacement.price;
+        }
+    })
+}
+
+// Permet d'obtenir un historique de facturation
+const getHistorique = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/historique/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        });
+
+        if(response.ok){
+            const data = await response.json();
+
+            if(data != null){
+                historique.value = data.histo;
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
   onMounted(async () => {
     // Initialiser la carte
     map.value = L.map(mapContainer.value).setView([51.505, -0.09], 13);
@@ -261,6 +294,12 @@ import moment from 'moment-timezone'
     // Obtenir la localisation du user
     getLocation();
 
+    // On prend toutes les factures
+    await getHistorique();
+
+    // On charge le solde
+    getSolde()
+
   });
 </script>
 
@@ -268,7 +307,7 @@ import moment from 'moment-timezone'
   <AppLayout>
     <div class="relative">
       <div ref="mapContainer" class="h-full z-[1] page-container"></div>
-      <div class="absolute top-5 right-5 z-[1]">
+      <div v-if="solde < 20" class="absolute top-5 right-5 z-[1]">
         <div v-if="car">
           <div v-if="car.isMoving" class="px-4 py-2 h-[30vh] w-[25vw] rounded-lg shadow-md img-carMoving flex justify-center items-end">
             <p class="font-thin text-center bg-white px-2 py-1 rounded-lg">Votre voiture est en cours de déplacement</p>
@@ -307,6 +346,13 @@ import moment from 'moment-timezone'
             hover:-translate-y-1 hover:scale-125 hover:bg-slate-100">
             <i class="zmdi zmdi-gps-dot"></i>
           </button>
+        </div>
+      </div>
+
+      <div v-else class="modal-overlay z-[2]">
+        <div class="modal bg-white w-[25vw] p-6 rounded-lg flex flex-col gap-8">
+          <p class="text-center font-thin text-2xl">Votre solde dépace les 20$. Vous devez payer le solde afin de pouvoir continuer.</p>
+          <RouterLink to="/transaction" v-if="solde > 0" class="border py-2 w-full text-white bg-green-500 hover:bg-green-300 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-money"></i>Payer les frais</RouterLink>
         </div>
       </div>
 

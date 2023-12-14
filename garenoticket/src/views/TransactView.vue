@@ -38,9 +38,49 @@ const getHistorique = async () => {
     }
 }
 
+// Permet d'obtenir un historique de facturation
+const getBills = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/facture/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        });
+
+        if(response.ok){
+            const data = await response.json();
+
+            if(data != null){
+                factures.value = data.factures;
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // Permet d'obtenir un historique des déplacements
 const getDeplacements = () => {
     deplacements.value = [];
+}
+
+// Permet d'effectuer un paiement
+const effectuerPaiement = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/effectuerPaiement/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        });
+
+        if(response.ok){
+            await getHistorique();
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 // Permet de s'assurer que le user est bien authentifié avant de continuer.
@@ -69,8 +109,11 @@ onMounted(async () => {
     // On verifie en premier voir si user authentifié
     await verifLogin();
 
-    // On prend toutes les factures
+    // On récupère l'historique des déplacements
     await getHistorique();
+
+    // On prend toutes les factures
+    await getBills();
 
     // On charge le solde
     getSolde()
@@ -83,7 +126,7 @@ onMounted(async () => {
         <div class="py-4 px-6 flex flex-col justify-between gap-4">
         <h2 class="font-ligth text-center text-5xl">Solde actuel</h2>
         <h3 class="font-thin text-center text-4xl">{{ solde }} <span>$</span></h3>
-        <button v-if="solde > 0" class="border py-2 w-full text-white bg-green-500 hover:bg-green-300 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-money"></i>Payer</button>
+        <button v-if="solde > 0" @click="effectuerPaiement" class="border py-2 w-full text-white bg-green-500 hover:bg-green-300 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-money"></i>Payer</button>
         <button v-else disabled class="border py-2 w-full bg-slate-200 rounded-md flex items-center justify-center gap-2"><i class="zmdi zmdi-money"></i>Payer</button>
         </div>    
 
@@ -94,13 +137,12 @@ onMounted(async () => {
                         <i class="zmdi zmdi-receipt"></i>
                         <h3 class="text-xl font-light">Historique des factures</h3>
                     </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i class="zmdi zmdi-edit"></i>
-                    </button>
                 </div>
 
-                <div v-if="factures" class="h-full flex items-center justify-center">
-                    <p class="text-2xl font-thin">Vous avez des factures.</p>
+                <div v-if="factures" class="h-full flex flex-col gap-2">
+                    <li class=" list-none border bg-slate-100 px-4 py-2 text-center font-thin rounded-md" v-for="facture in factures">
+                     {{ facture.createdAt }} - {{ facture.price }} $
+                    </li>
                 </div>
 
                 <div v-else class="h-full flex items-center justify-center">
@@ -114,14 +156,11 @@ onMounted(async () => {
                         <i class="zmdi zmdi-car"></i>
                         <h3 class="text-xl font-light">Historique des déplacements</h3>
                     </div>
-                    <button class="hover:bg-slate-200 border py-1 px-2.5 rounded-md">
-                        <i class="zmdi zmdi-edit"></i>
-                    </button>
                 </div>
 
                 <div v-if="historique" class="h-full flex flex-col gap-2">
-                    <li class=" list-none border bg-slate-100 px-4 py-2 text-center font-thin" v-for="deplacement in historique">
-                     {{ deplacement.createdAt }} - {{ deplacement.price }} $ - {{ deplacement.isPaid }}
+                    <li class=" list-none border bg-slate-100 px-4 py-2 text-center font-thin rounded-md" v-for="deplacement in historique">
+                     {{ deplacement.createdAt }} - {{ deplacement.price }} $ - {{ deplacement.isPaid ? "Payé" : "Non payé" }}
                     </li>
                 </div>
 

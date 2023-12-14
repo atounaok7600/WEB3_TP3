@@ -26,22 +26,49 @@ exports.getHistorique = async (req, res, next) => {
 exports.effectuerPaiement = async (req, res, next) => {
   const userId = req.user.userId;
  
+  try {
+    const histoPrix = await Histo.find(
+      { userId: userId, isPaid: false },
+      { price: 1, _id: 0 }
+    )
+
+    let total = 0;
+    histoPrix.forEach(item => {
+      total += item.price
+    });
+    
+    const histo = await Histo
+    .updateMany(
+      { userId: userId, isPaid: false },
+      { $set: { isPaid: true } },
+      { new: true });
+
+
+    await Facture.create({
+      userId: userId,
+      price: total
+    })
+    
+    res.status(200).json({});
+  } catch (err) {
+    next(err);
+  }
 }
 
 exports.getFacture = async (req, res, next) => {
   const userId = req.user.userId;
 
   try {
-    const allFactures = await Facture.find({ userId: userId }).lean();
-    console.log(allFactures)
-
+    const factures = await Facture
+    .find({ userId: userId })
+    .sort({ createdAt: -1 });
+    
     res.status(200).json({
-      factures: allFactures
+      factures: factures
     });
-  } catch (error) {
-    next(error)
+  } catch (err) {
+    next(err);
   }
-  
 }
 
 exports.ajoutHistorique = async (req, res, next) => {
