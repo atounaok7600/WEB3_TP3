@@ -193,11 +193,12 @@ import { useRoute } from 'vue-router';
             showConfirmationModal.value = false;
 
             // On met le marker au centre
+            await facturation();
             getLocation();
             updateCarsMarkers();
 
             setTimeout(() => {
-                window.location.href = `/movecar/${userId.value}`
+                window.location.href = `/valet`
             }, 2000)
 
         } else {
@@ -214,6 +215,33 @@ import { useRoute } from 'vue-router';
       });
     }
 
+  }
+
+  // Fonction qui permet de facturer le trajet au user
+  const facturation = async () => {
+    const userId = user.value._id
+    console.log("Voici user pour trajet: " + userId + " - " + user.value.username)
+
+    try {
+        const response = await fetch(`http://localhost:3000/historique`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify({ carUserId: userId, valetPrice: valet.value.price }),
+        });
+  
+        if(response.ok){
+
+        } else {
+            const errorData = await response.json();
+            console.error(errorData);
+            toast.error('Erreur lors de la mise à jours du véhicule.');
+        }
+      } catch (error) {
+          console.error("Erreur lors de l'envoi des données", error);
+      }
   }
 
   // Fonction lorsque la voiture est récupérée
